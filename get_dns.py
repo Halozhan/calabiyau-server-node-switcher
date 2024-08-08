@@ -8,12 +8,18 @@ def query_domain(domain: str, dns_server: list):
     resolver = dns.resolver.Resolver()
     resolver.nameservers = dns_server
     ip = []
-    try:
-        addresses = resolver.resolve(domain)
-        for address in addresses:
-            ip.append(address.to_text())
-    except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout):
-        pass
+    max_retries = 5
+    attempts = 0
+    while attempts < max_retries:
+        try:
+            addresses = resolver.resolve(domain)
+            for address in addresses:
+                ip.append(address.to_text())
+            break  # 성공하면 반복문을 종료
+        except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout):
+            attempts += 1
+            if attempts == max_retries:
+                pass  # 최대 시도 횟수에 도달하면 아무것도 하지 않음
     return ip
 
 
