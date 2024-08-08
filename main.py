@@ -1,11 +1,20 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QLineEdit
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QTimer, QThread, pyqtSignal
+from PyQt5.QtWidgets import (
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QHBoxLayout,
+    QLineEdit,
+    QRadioButton,
+    QButtonGroup,
+)
+from PyQt5.QtCore import QTimer, QThread, pyqtSignal, pyqtSlot
 from ping3 import ping
 from dns_servers import dns_servers
 from domains import domains
 import get_dns
+from python_hosts import Hosts, HostsEntry
 
 
 class PingThread(QThread):
@@ -25,9 +34,18 @@ class PingThread(QThread):
 
 
 class PingWidget(QWidget):
-    def __init__(self, ip_address):
+    def __init__(
+        self,
+        domain,
+        ip_address,
+        button_group,
+        checked,
+    ):
         super().__init__()
+        self.domain = domain
         self.ip_address = ip_address
+        self.button_group: QButtonGroup = button_group
+        self.checked: bool = checked
         self.initUI()
 
     def initUI(self):
@@ -38,13 +56,20 @@ class PingWidget(QWidget):
         self.layout.addWidget(self.ip_address_label)
 
         # ping_label
-        self.ping_label = QLabel(f"Pinging...")
+        self.ping_label = QLabel("Pinging...")
         self.layout.addWidget(self.ping_label)
 
         # ping_color_indicator
         self.ping_color_indicator = QLabel()
         self.ping_color_indicator.setFixedSize(20, 20)
         self.layout.addWidget(self.ping_color_indicator)
+
+        # ip_address_radio
+        self.ip_address_radio = QRadioButton()
+        self.ip_address_radio.setChecked(self.checked)
+        self.ip_address_radio.toggled.connect(self.on_radio_button_toggled)
+        self.button_group.addButton(self.ip_address_radio)
+        self.layout.addWidget(self.ip_address_radio)
 
         self.setLayout(self.layout)
 
@@ -69,6 +94,29 @@ class PingWidget(QWidget):
         else:
             color = "#EB4353"  # Red
         self.ping_color_indicator.setStyleSheet(f"background-color: {color};")
+
+    @pyqtSlot()
+    def on_radio_button_toggled(self):
+        """
+        관리자 권한으로 실행해야 hosts 파일을 수정할 수 있습니다.
+        require admin permission to modify hosts file.
+        """
+        if self.ip_address_radio.isChecked():
+            try:
+                hosts = Hosts()
+                hosts.remove_all_matching(name=self.domain)
+                hosts.add(
+                    [
+                        HostsEntry(
+                            entry_type="ipv4",
+                            address=self.ip_address,
+                            names=[self.domain],
+                        )
+                    ]
+                )
+                hosts.write()
+            except Exception as e:
+                print(e)
 
 
 class GetIPsThread(QThread):
@@ -96,6 +144,9 @@ class DomainWidget(QWidget):
         self.domain_label = QLineEdit(f"Domain: {self.domain}")
         self.domain_label.setReadOnly(True)  # 편집 불가능하게 설정
         self.layout.addWidget(self.domain_label)
+
+        self.button_group = QButtonGroup(self)
+
         self.setLayout(self.layout)
 
         self.get_ips_thread = GetIPsThread(self.domain)
@@ -104,8 +155,23 @@ class DomainWidget(QWidget):
 
     def add_ping_widgets(self, ip_addresses):
         for ip_address in ip_addresses:
-            ping_widget = PingWidget(ip_address)
+            ping_widget = PingWidget(
+                self.domain,
+                ip_address,
+                self.button_group,
+                self.add_checked_widgets(ip_address),
+            )
             self.layout.addWidget(ping_widget)
+
+    def add_checked_widgets(self, ip_address):
+        hosts = Hosts()
+        hostnames = []
+        for entry in hosts.entries:
+            if isinstance(entry, HostsEntry) and entry.names:
+                hostnames.append(entry.address)
+        if ip_address in hostnames:
+            return True
+        return False
 
 
 if __name__ == "__main__":
