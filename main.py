@@ -9,31 +9,16 @@ from PyQt5.QtWidgets import (
     QRadioButton,
     QButtonGroup,
 )
-from PyQt5.QtCore import QTimer, QThread, pyqtSignal, pyqtSlot
-from ping3 import ping
+from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
+from change_hosts import ChangeHosts
 from dns_servers import dns_servers
 from domains import domains
 import get_dns
 from python_hosts import Hosts, HostsEntry
+from ping_widget import PingWidget
 
 
-class PingThread(QThread):
-    ping_finished = pyqtSignal(float)
-
-    def __init__(self, address):
-        super().__init__()
-        self.address = address
-
-    def run(self):
-        try:
-            response = ping(self.address, timeout=2)
-            result = response if response is not None else float("inf")
-        except Exception:
-            result = float("inf")
-        self.ping_finished.emit(result)
-
-
-class PingWidget(QWidget):
+class PingMainWidget(QWidget):
     def __init__(
         self,
         domain,
@@ -55,9 +40,9 @@ class PingWidget(QWidget):
         self.ip_address_label.setReadOnly(True)
         self.layout.addWidget(self.ip_address_label)
 
-        # ping_label
-        self.ping_label = QLabel("Pinging...")
-        self.layout.addWidget(self.ping_label)
+        # ping_widget
+        self.ping_widget = PingWidget(self.ip_address)
+        self.layout.addWidget(self.ping_widget)
 
         # ping_color_indicator
         self.ping_color_indicator = QLabel()
@@ -73,50 +58,10 @@ class PingWidget(QWidget):
 
         self.setLayout(self.layout)
 
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_ping)
-        self.timer.start(500)  # Update every
-
-    def update_ping(self):
-        self.ping_thread = PingThread(self.ip_address)
-        self.ping_thread.ping_finished.connect(self.update_ping_label)
-        self.ping_thread.start()
-
-    def update_ping_label(self, ping):
-        self.ping_label.setText(f"{ping * 1000:.2f} ms")
-        self.update_ping_color_indicator(ping)
-
-    def update_ping_color_indicator(self, ping):
-        if ping < 0.05:
-            color = "#45EF5D"  # Green
-        elif ping < 0.1:
-            color = "#FFD041"  # Yellow
-        else:
-            color = "#EB4353"  # Red
-        self.ping_color_indicator.setStyleSheet(f"background-color: {color};")
-
     @pyqtSlot()
     def on_radio_button_toggled(self):
-        """
-        관리자 권한으로 실행해야 hosts 파일을 수정할 수 있습니다.
-        require admin permission to modify hosts file.
-        """
         if self.ip_address_radio.isChecked():
-            try:
-                hosts = Hosts()
-                hosts.remove_all_matching(name=self.domain)
-                hosts.add(
-                    [
-                        HostsEntry(
-                            entry_type="ipv4",
-                            address=self.ip_address,
-                            names=[self.domain],
-                        )
-                    ]
-                )
-                hosts.write()
-            except Exception as e:
-                print(e)
+            ChangeHosts(self.domain, self.ip_address).change()
 
 
 class GetIPsThread(QThread):
@@ -155,7 +100,7 @@ class DomainWidget(QWidget):
 
     def add_ping_widgets(self, ip_addresses):
         for ip_address in ip_addresses:
-            ping_widget = PingWidget(
+            ping_widget = PingMainWidget(
                 self.domain,
                 ip_address,
                 self.button_group,
@@ -185,8 +130,8 @@ if __name__ == "__main__":
         main_layout.addWidget(domain_widget)
 
     main_widget.setLayout(main_layout)
-    main_widget.setWindowTitle("Calabiyau Server Ping Monitor")
-    main_widget.setGeometry(100, 100, 1000, 600)
+    main_widget.setWindowTitle("Calabiyau(卡拉彼丘) Server Changer - Please wait for a while")
+    main_widget.setGeometry(100, 100, 1200, 600)
     main_widget.show()
 
     sys.exit(app.exec())
