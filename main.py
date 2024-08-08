@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLay
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer, QThread, pyqtSignal
 from ping3 import ping
+from dns_servers import dns_servers
+from domains import domains
 import get_dns
 
 
@@ -49,7 +51,7 @@ class PingWidget(QWidget):
 
 
 class GetIPsThread(QThread):
-    ips_fetched = pyqtSignal(set)
+    ips_fetched = pyqtSignal(list)
 
     def __init__(self, domain):
         super().__init__()
@@ -57,7 +59,7 @@ class GetIPsThread(QThread):
 
     def run(self):
         self.ip_addresses = get_dns.get_ip_addresses_from_multiple_dns(
-            self.domain, get_dns.dns_servers
+            self.domain, dns_servers
         )
         self.ips_fetched.emit(self.ip_addresses)
 
@@ -91,12 +93,6 @@ if __name__ == "__main__":
     main_widget = QWidget()
     main_layout = QHBoxLayout()
 
-    domains = [
-        "ds-tj-1.klbq.qq.com",
-        "ds-nj-1.klbq.qq.com",
-        "ds-gz-1.klbq.qq.com",
-        "ds-cq-1.klbq.qq.com",
-    ]
     for domain in domains:
         domain_ping_widget = DomainPingWidget(domain)
         main_layout.addWidget(domain_ping_widget)
