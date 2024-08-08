@@ -31,10 +31,21 @@ class PingWidget(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.layout = QVBoxLayout()
-        self.label = QLineEdit(f"Pinging {self.ip_address}...")
-        self.label.setReadOnly(True)
-        self.layout.addWidget(self.label)
+        self.layout = QHBoxLayout()
+        # ip_address_label
+        self.ip_address_label = QLineEdit(f"{self.ip_address}")
+        self.ip_address_label.setReadOnly(True)
+        self.layout.addWidget(self.ip_address_label)
+
+        # ping_label
+        self.ping_label = QLabel(f"Pinging...")
+        self.layout.addWidget(self.ping_label)
+
+        # ping_color_indicator
+        self.ping_color_indicator = QLabel()
+        self.ping_color_indicator.setFixedSize(20, 20)
+        self.layout.addWidget(self.ping_color_indicator)
+
         self.setLayout(self.layout)
 
         self.timer = QTimer(self)
@@ -47,7 +58,17 @@ class PingWidget(QWidget):
         self.ping_thread.start()
 
     def update_ping_label(self, ping):
-        self.label.setText(f"{self.ip_address}: {ping * 1000:.2f} ms")
+        self.ping_label.setText(f"{ping * 1000:.2f} ms")
+        self.update_ping_color_indicator(ping)
+
+    def update_ping_color_indicator(self, ping):
+        if ping < 0.05:
+            color = "#45EF5D"  # Green
+        elif ping < 0.1:
+            color = "#FFD041"  # Yellow
+        else:
+            color = "#EB4353"  # Red
+        self.ping_color_indicator.setStyleSheet(f"background-color: {color};")
 
 
 class GetIPsThread(QThread):
@@ -64,7 +85,7 @@ class GetIPsThread(QThread):
         self.ips_fetched.emit(self.ip_addresses)
 
 
-class DomainPingWidget(QWidget):
+class DomainWidget(QWidget):
     def __init__(self, domain):
         super().__init__()
         self.domain = domain
@@ -91,11 +112,11 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     main_widget = QWidget()
-    main_layout = QHBoxLayout()
+    main_layout = QHBoxLayout()  # 수평으로 배치
 
     for domain in domains:
-        domain_ping_widget = DomainPingWidget(domain)
-        main_layout.addWidget(domain_ping_widget)
+        domain_widget = DomainWidget(domain)
+        main_layout.addWidget(domain_widget)
 
     main_widget.setLayout(main_layout)
     main_widget.setWindowTitle("Calabiyau Server Ping Monitor")
