@@ -18,19 +18,17 @@ from python_hosts import Hosts, HostsEntry
 from ping_widget import PingWidget
 
 
-class PingMainWidget(QWidget):
+class ServerWidget(QWidget):
     def __init__(
         self,
         domain,
         ip_address,
         button_group,
-        checked,
     ):
         super().__init__()
         self.domain = domain
         self.ip_address = ip_address
         self.button_group: QButtonGroup = button_group
-        self.checked: bool = checked
         self.initUI()
 
     def initUI(self):
@@ -44,24 +42,49 @@ class PingMainWidget(QWidget):
         self.ping_widget = PingWidget(self.ip_address)
         self.layout.addWidget(self.ping_widget)
 
-        # ping_color_indicator
-        self.ping_color_indicator = QLabel()
-        self.ping_color_indicator.setFixedSize(20, 20)
-        self.layout.addWidget(self.ping_color_indicator)
-
         # ip_address_radio
         self.ip_address_radio = QRadioButton()
-        self.ip_address_radio.setChecked(self.checked)
+        # 초기에 체크 상태를 설정
+        self.ip_address_radio.setChecked(self.is_matched_ip_address())
         self.ip_address_radio.toggled.connect(self.on_radio_button_toggled)
         self.button_group.addButton(self.ip_address_radio)
         self.layout.addWidget(self.ip_address_radio)
 
         self.setLayout(self.layout)
 
+    def is_matched_ip_address(self) -> bool:
+        # hosts 파일을 읽어서 현재 ip_address가 있는지 확인
+        hosts = Hosts()
+        hostnames = []
+        for entry in hosts.entries:
+            if isinstance(entry, HostsEntry) and entry.names:
+                hostnames.append(entry.address)
+        if self.ip_address in hostnames:
+            return True
+        return False
+
     @pyqtSlot()
     def on_radio_button_toggled(self):
         if self.ip_address_radio.isChecked():
             ChangeHosts(self.domain, self.ip_address).change()
+
+
+class GetIPThread(QThread):
+    """
+    dns_server로부터 domain에 대한 ip 주소를 가져오는 스레드
+    """
+    ip_fetched = pyqtSignal(str)
+
+    def __init__(self, domain, dns_server):
+        super().__init__()
+        self.domain = domain
+        self.dns_server = dns_server
+
+    def run(self):
+        ip_addresses = get_dns.query_domain(self.domain, [self.dns_server])
+        # 여러 ip를 하나씩 보냄
+        for ip_address in ip_addresses:
+            self.ip_fetched.emit(ip_address)
 
 
 class GetIPsThread(QThread):
@@ -70,18 +93,34 @@ class GetIPsThread(QThread):
     def __init__(self, domain):
         super().__init__()
         self.domain = domain
+        self.ip_set = set()
 
     def run(self):
-        self.ip_addresses = get_dns.get_ip_addresses_from_multiple_dns(
-            self.domain, dns_servers
-        )
-        self.ips_fetched.emit(self.ip_addresses)
+        get_ip_thread_list = []
+        for dns_server in dns_servers:
+            get_ip_thread = GetIPThread(self.domain, dns_server)
+            get_ip_thread.ip_fetched.connect(self.on_ip_fetched)
+            get_ip_thread.start()
+            get_ip_thread_list.append(get_ip_thread)
+
+        for get_ip_thread in get_ip_thread_list:
+            get_ip_thread.wait()
+
+    def on_ip_fetched(self, ip_address):
+        """
+        중복을 방지하여 ip 주소를 가져옴
+        """
+        if ip_address not in self.ip_set:
+            self.ip_set.add(ip_address)
+            ip_list = sorted(self.ip_set)
+            self.ips_fetched.emit(ip_list)
 
 
 class DomainWidget(QWidget):
     def __init__(self, domain):
         super().__init__()
         self.domain = domain
+        self.ip_addresses_set = set()
         self.initUI()
 
     def initUI(self):
@@ -98,31 +137,42 @@ class DomainWidget(QWidget):
 
         self.button_group = QButtonGroup(self)
 
+        self.ip_address_list_box_layout = QVBoxLayout()
+        self.layout.addLayout(self.ip_address_list_box_layout)
+
         self.setLayout(self.layout)
 
         self.get_ips_thread = GetIPsThread(self.domain)
-        self.get_ips_thread.ips_fetched.connect(self.add_ping_widgets)
+        self.get_ips_thread.ips_fetched.connect(self.on_ips_fetched)
         self.get_ips_thread.start()
 
-    def add_ping_widgets(self, ip_addresses):
-        for ip_address in ip_addresses:
-            ping_widget = PingMainWidget(
+    def on_ips_fetched(self, ip_addresses):
+        # ip 주소를 가져오면 ping_widget을 렌더링
+        self.ip_addresses_list = ip_addresses
+        self.render_ping_widgets()
+
+    def render_ping_widgets(self):
+        # 기존의 ping_widget을 모두 제거
+        self.clear_layout(self.ip_address_list_box_layout)
+
+        # 새로운 ping_widget을 추가
+        for ip_address in self.ip_addresses_list:
+            ping_widget = ServerWidget(
                 self.domain,
                 ip_address,
                 self.button_group,
-                self.add_checked_widgets(ip_address),
             )
-            self.layout.addWidget(ping_widget)
+            self.ip_address_list_box_layout.addWidget(ping_widget)
 
-    def add_checked_widgets(self, ip_address):
-        hosts = Hosts()
-        hostnames = []
-        for entry in hosts.entries:
-            if isinstance(entry, HostsEntry) and entry.names:
-                hostnames.append(entry.address)
-        if ip_address in hostnames:
-            return True
-        return False
+    def clear_layout(self, layout):
+        # 레이아웃에 있는 모든 위젯을 제거
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+            else:
+                layout.removeItem(item)
 
 
 if __name__ == "__main__":
@@ -136,7 +186,9 @@ if __name__ == "__main__":
         main_layout.addWidget(domain_widget)
 
     main_widget.setLayout(main_layout)
-    main_widget.setWindowTitle("Calabiyau(卡拉彼丘) Server Changer - Please wait for a while")
+    main_widget.setWindowTitle(
+        "Calabiyau(卡拉彼丘) Server Changer - Please restart your game after changing the server"
+    )
     main_widget.setGeometry(100, 100, 1200, 600)
     main_widget.show()
 

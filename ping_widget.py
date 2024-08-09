@@ -13,11 +13,12 @@ class PingWidget(QWidget):
     def initUI(self):
         self.layout = QHBoxLayout()
 
+        # ping_label
         self.ping_label = QLabel("Ping...")
         self.layout.addWidget(self.ping_label)
 
-        self.ping_color_indicator = QLabel()
-        self.ping_color_indicator.setFixedSize(20, 20)
+        # ping_color_indicator
+        self.ping_color_indicator = PingColorIndicator()
         self.layout.addWidget(self.ping_color_indicator)
 
         self.setLayout(self.layout)
@@ -31,7 +32,20 @@ class PingWidget(QWidget):
             self.ping_label.setText("No response")
         else:
             self.ping_label.setText(f"{ping*1000:.2f} ms")
-        self.update_ping_color_indicator(ping)
+        self.ping_color_indicator.update_ping_color_indicator(ping)
+
+
+class PingColorIndicator(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.layout = QHBoxLayout()
+        self.ping_color_indicator = QLabel()
+        self.ping_color_indicator.setFixedSize(20, 20)
+        self.layout.addWidget(self.ping_color_indicator)
+        self.setLayout(self.layout)
 
     def update_ping_color_indicator(self, ping):
         if ping < 0.05:
