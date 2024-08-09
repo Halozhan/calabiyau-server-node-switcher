@@ -3,8 +3,8 @@ from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
     QVBoxLayout,
-    QLabel,
     QHBoxLayout,
+    QLabel,
     QLineEdit,
     QRadioButton,
     QButtonGroup,
@@ -86,9 +86,15 @@ class DomainWidget(QWidget):
 
     def initUI(self):
         self.layout = QVBoxLayout()
-        self.domain_label = QLineEdit(f"Domain: {self.domain}")
-        self.domain_label.setReadOnly(True)  # 편집 불가능하게 설정
-        self.layout.addWidget(self.domain_label)
+
+        # domain_label
+        self.domain_layout = QHBoxLayout()
+        self.domain_label = QLabel("Domain:")
+        self.domain_layout.addWidget(self.domain_label)
+        self.domain_name_label = QLineEdit(self.domain)
+        self.domain_name_label.setReadOnly(True)
+        self.domain_layout.addWidget(self.domain_name_label)
+        self.layout.addLayout(self.domain_layout)
 
         self.button_group = QButtonGroup(self)
 
