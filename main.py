@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QPushButton,
     QRadioButton,
     QButtonGroup,
 )
@@ -73,6 +74,7 @@ class GetIPThread(QThread):
     """
     dns_server로부터 domain에 대한 ip 주소를 가져오는 스레드
     """
+
     ip_fetched = pyqtSignal(str)
 
     def __init__(self, domain, dns_server):
@@ -135,6 +137,11 @@ class DomainWidget(QWidget):
         self.domain_layout.addWidget(self.domain_name_label)
         self.layout.addLayout(self.domain_layout)
 
+        # reset_button
+        self.reset_button = QPushButton("set to default")
+        self.reset_button.clicked.connect(self.on_reset_button_clicked)
+        self.layout.addWidget(self.reset_button)
+
         self.button_group = QButtonGroup(self)
 
         self.ip_address_list_box_layout = QVBoxLayout()
@@ -145,6 +152,11 @@ class DomainWidget(QWidget):
         self.get_ips_thread = GetIPsThread(self.domain)
         self.get_ips_thread.ips_fetched.connect(self.on_ips_fetched)
         self.get_ips_thread.start()
+
+    def on_reset_button_clicked(self):
+        # reset_button을 클릭하면 hosts 파일을 초기화
+        ChangeHosts(self.domain, "").remove()
+        self.render_ping_widgets()  # ping_widget을 다시 렌더링
 
     def on_ips_fetched(self, ip_addresses):
         # ip 주소를 가져오면 ping_widget을 렌더링
