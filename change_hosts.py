@@ -13,8 +13,7 @@ class ChangeHosts:
         """
         try:
             hosts = Hosts()
-            # 기존 hosts 파일에 동일한 도메인이 있으면 삭제합니다.
-            hosts.remove_all_matching(name=self.domain)
+            self.remove()
             # hosts 파일에 도메인과 ip 주소를 추가합니다.
             hosts.add(
                 [
@@ -25,6 +24,19 @@ class ChangeHosts:
                     )
                 ]
             )
+            hosts.write()
+        except Exception as e:
+            print(e)
+
+    def remove(self):
+        """
+        관리자 권한으로 실행해야 hosts 파일을 수정할 수 있습니다.
+        require admin permission to modify hosts file.
+        """
+        try:
+            hosts = Hosts()
+            # 기존 hosts 파일에 동일한 도메인이 있으면 삭제합니다.
+            hosts.remove_all_matching(name=self.domain)
             hosts.write()
         except Exception as e:
             print(e)
