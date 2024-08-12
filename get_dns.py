@@ -20,8 +20,11 @@ def query_domain(domain: str, dns_server: list):
             dns.resolver.NoAnswer,
             dns.resolver.NXDOMAIN,
             dns.exception.Timeout,
+            dns.resolver.NoNameservers,
         ):
             print(f"DNS query failed for {domain} on {dns_server}")
+        except Exception as e:
+            print(e)
 
     return ip
 
