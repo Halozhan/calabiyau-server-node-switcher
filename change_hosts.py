@@ -12,8 +12,9 @@ class ChangeHosts:
         require admin permission to modify hosts file.
         """
         try:
-            hosts = Hosts()
+            # 동일한 도메인이 이미 hosts 파일에 있으면 삭제합니다.
             self.remove()
+            hosts = Hosts()
             # hosts 파일에 도메인과 ip 주소를 추가합니다.
             hosts.add(
                 [
