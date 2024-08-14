@@ -16,6 +16,8 @@ Tianjin(天津) is 116.130.xxx.xxx or 123.151.54.47 is recommended.
 Nanjing(南京) is 182.50.15.118 or 121.229.92.16, 180.110.193.185 is recommended.
 Guangzhou(广州) is 43.159.233.178 or 183.47.107.193 is recommended.
 Chongqing(重庆) is 113.250.9.xxx or 58.144.164.xxx is recommended.
+
+Avoid 43.159.233.xxx if possible, except for Guangzhou(广州). Those servers are Hong Kong relay servers and can have high latency.
 ```
 
 ## How to restore hosts file
