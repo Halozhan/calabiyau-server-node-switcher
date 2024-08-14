@@ -5,15 +5,17 @@ This is a simple server node switcher for Calabiyau(卡拉彼丘) game. It can h
 1. Download the latest release from [release page](https://github.com/Halozhan/calabiyau_dns_fixer/releases).
 2. Run the executable file.
 3. There are four regions and you have to choose the best server for each.
+![image](https://github.com/user-attachments/assets/fedbc086-0630-4d9c-a3c3-f2da3c913f6d)
 
-## What is best server?
-The best server is the server that has the lowest and stable ping.
-In my cases, I live in Korea. So best server might be different from your country.
+
+## What is the best server?
+The best server is the server that has the lowest and most stable ping.
+In my case, I live in Korea. So, the best server might be different from your country.
 ```
-Tianjin(天津) with start with 116.130.xxx.xxx, 123.151.54.47 are good to choose.
-Nanjing(南京) with start with 182.50.15.118, 121.229.92.16, 180.110.193.185 are good to choose.
-Guangzhou(广州) with start with 43.159.233.178, 183.47.107.193 are good to choose.
-Chongqing(重庆) with start with 113.250.9.xxx, 58.144.164.xxx are good to choose.
+Tianjin(天津) is 116.130.xxx.xxx or 123.151.54.47 is recommended.
+Nanjing(南京) is 182.50.15.118 or 121.229.92.16, 180.110.193.185 is recommended.
+Guangzhou(广州) is 43.159.233.178 or 183.47.107.193 is recommended.
+Chongqing(重庆) is 113.250.9.xxx or 58.144.164.xxx is recommended.
 ```
 
 ## How to restore hosts file
