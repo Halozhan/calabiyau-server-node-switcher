@@ -18,13 +18,13 @@ class PingWidget(QWidget):
         self.layout.addWidget(self.ping_label)
 
         # ping_color_indicator
-        self.ping_color_indicator = PingColorIndicator()
+        self.ping_color_indicator = PingStatusIndicator()
         self.layout.addWidget(self.ping_color_indicator)
 
         self.setLayout(self.layout)
 
-        self.ping_thread = PingThread(self.ip_address)
-        self.ping_thread.ping_finished.connect(self.on_ping_finished)
+        self.ping_thread = PingWorker(self.ip_address)
+        self.ping_thread.ping_result.connect(self.on_ping_finished)
         self.ping_thread.start()
 
     def on_ping_finished(self, ping):
@@ -35,7 +35,7 @@ class PingWidget(QWidget):
         self.ping_color_indicator.update_ping_color_indicator(ping)
 
 
-class PingColorIndicator(QWidget):
+class PingStatusIndicator(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -57,8 +57,8 @@ class PingColorIndicator(QWidget):
         self.ping_color_indicator.setStyleSheet(f"background-color: {color};")
 
 
-class PingThread(QThread):
-    ping_finished = pyqtSignal(float)
+class PingWorker(QThread):
+    ping_result = pyqtSignal(float)
 
     def __init__(self, ip_address):
         super().__init__()
@@ -75,4 +75,4 @@ class PingThread(QThread):
             except Exception as e:
                 print(e)
                 response = float("inf")
-            self.ping_finished.emit(response)
+            self.ping_result.emit(response)

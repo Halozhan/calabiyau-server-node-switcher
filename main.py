@@ -1,4 +1,6 @@
 import sys
+from threading import Thread
+import time
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
@@ -7,6 +9,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
     QPushButton,
+    QCheckBox,
     QRadioButton,
     QButtonGroup,
 )
@@ -16,7 +19,23 @@ from dns_servers import dns_servers
 from domains import domains
 import get_dns
 from python_hosts import Hosts, HostsEntry
+from get_route_table import get_network_destination_ips
 from ping_widget import PingWidget
+
+
+ips = []
+
+
+def get_network_destination_ips_thread():
+    global ips
+    while True:
+        ips = get_network_destination_ips()
+        time.sleep(2)
+
+
+thread = Thread(target=get_network_destination_ips_thread)
+thread.daemon = True
+thread.start()
 
 
 class ServerWidget(QWidget):
@@ -51,7 +70,35 @@ class ServerWidget(QWidget):
         self.button_group.addButton(self.ip_address_radio)
         self.layout.addWidget(self.ip_address_radio)
 
+        # VPN을 사용하고있는지 여부를 표시
+        self.is_vpn_connected_label = QLabel("VPN:")
+        self.layout.addWidget(self.is_vpn_connected_label)
+        self.is_vpn_connected_checkbox = QCheckBox()
+        self.is_vpn_connected_checkbox.setEnabled(False)
+        self.is_vpn_connected_checkbox.setChecked(self.is_vpn_connected())
+        self.vpn_check_thread = Thread(target=self.check_vpn_connection)
+        self.vpn_check_thread.daemon = True
+        self.vpn_check_thread.start()
+
+        self.layout.addWidget(self.is_vpn_connected_checkbox)
+
         self.setLayout(self.layout)
+
+    def check_vpn_connection(self):
+        while True:
+            is_connected = self.is_vpn_connected()
+            try:
+                self.is_vpn_connected_checkbox.setChecked(is_connected)
+            except RuntimeError:
+                break
+            time.sleep(2)
+
+    def is_vpn_connected(self) -> bool:
+        if ips:
+            for ip in ips:
+                if ip.is_route(self.ip_address):
+                    return True
+        return False
 
     def is_matched_ip_address(self) -> bool:
         # hosts 파일을 읽어서 현재 ip_address가 있는지 확인
@@ -199,9 +246,9 @@ if __name__ == "__main__":
 
     main_widget.setLayout(main_layout)
     main_widget.setWindowTitle(
-        "Calabiyau(卡拉彼丘) Server Changer - Please restart your game after changing the server"
+        "Calabiyau(卡拉彼丘) Server Node Changer - Please restart your game after changing the server"
     )
-    main_widget.setGeometry(100, 100, 1200, 600)
+    main_widget.setGeometry(100, 100, 1300, 600)
     main_widget.show()
 
     sys.exit(app.exec())
