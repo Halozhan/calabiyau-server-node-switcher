@@ -55,16 +55,6 @@ def get_network_destination_ips():
     response = get_route_table()
     response_list = response.stdout.split("\n")
 
-    # collect = False
-    # ip_list = []
-    # for i in response_list:
-    #     if i == "Active Routes:":
-    #         collect = True
-    #     if collect:
-    #         ip_list.append(i)
-    #     if i == "Persistent Routes:":
-    #         collect = False
-
     ips: list[RoutingModel] = extract_ips(response_list)
 
     return ips

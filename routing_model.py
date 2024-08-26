@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from threading import Lock
 from typing import List, Optional
 
