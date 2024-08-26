@@ -1,4 +1,4 @@
 dnspython>=2.6.1
 ping3>=4.0.8
-PyQt5>=5.15.11
+PyQt6>=6.7.1
 python-hosts>=1.0.7
