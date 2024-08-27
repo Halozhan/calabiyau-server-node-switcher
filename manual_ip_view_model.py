@@ -1,8 +1,6 @@
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from change_hosts import ChangeHosts
-from dns_servers import dns_servers
-from get_dns import query_domain
 
 
 class ManualIPViewModel(QObject):
