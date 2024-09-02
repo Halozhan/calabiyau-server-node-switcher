@@ -5,9 +5,9 @@ from PyQt6.QtWidgets import (
     QTabWidget,
 )
 
-from domain_view import DomainView
-from domains import domains
-from manual_ip_view import ManualIPView
+from views.widgets.domain_view import DomainView
+from models.domains import domains
+from views.widgets.manual_ip_view import ManualIPView
 
 
 class MainView(QMainWindow):

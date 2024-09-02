@@ -1,6 +1,6 @@
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from change_hosts import ChangeHosts
+from models.change_hosts import ChangeHosts
 
 
 class ManualIPViewModel(QObject):

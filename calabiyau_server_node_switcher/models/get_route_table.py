@@ -1,7 +1,7 @@
 import subprocess
 import re
 
-from routing_model import RoutingModel
+from .routing_model import RoutingModel
 
 
 def get_route_table():

@@ -1,5 +1,5 @@
-from manual_ip_view_model import ManualIPViewModel
-from server_view import ServerView
+from viewmodels.manual_ip_view_model import ManualIPViewModel
+from .server_view import ServerView
 
 from PyQt6.QtWidgets import (
     QButtonGroup,

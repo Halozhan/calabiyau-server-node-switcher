@@ -8,10 +8,10 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
 
-from get_route_table import get_network_destination_ips
-from ping_view import PingView
-from routing_model import RoutingModel
-from server_view_model import ServerViewModel
+from models.get_route_table import get_network_destination_ips
+from .ping_view import PingView
+from models.routing_model import RoutingModel
+from viewmodels.server_view_model import ServerViewModel
 
 
 class ServerView(QWidget):

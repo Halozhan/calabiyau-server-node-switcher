@@ -1,8 +1,8 @@
 from PyQt6.QtCore import QObject, pyqtSignal, QThread
 
-from change_hosts import ChangeHosts
-from dns_servers import dns_servers
-from get_dns import query_domain
+from models.change_hosts import ChangeHosts
+from models.dns_servers import dns_servers
+from models.get_dns import query_domain
 
 
 class DomainViewModel(QObject):

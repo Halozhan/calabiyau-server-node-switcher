@@ -1,4 +1,5 @@
-import dns.resolver, dns.exception
+import dns.resolver
+import dns.exception
 
 
 def query_domain(domain: str, dns_server: list):

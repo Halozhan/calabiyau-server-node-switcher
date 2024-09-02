@@ -1,5 +1,5 @@
-from domain_view_model import DomainViewModel
-from server_view import ServerView
+from viewmodels.domain_view_model import DomainViewModel
+from .server_view import ServerView
 
 from PyQt6.QtWidgets import (
     QButtonGroup,

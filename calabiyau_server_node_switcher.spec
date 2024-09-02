@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['main.py'],
+    ['calabiyau_server_node_switcher/main.py'],
     pathex=[],
     binaries=[],
     datas=[],

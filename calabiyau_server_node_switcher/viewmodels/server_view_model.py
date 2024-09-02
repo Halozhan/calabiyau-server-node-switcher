@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QObject
 from python_hosts import Hosts, HostsEntry
 
-from change_hosts import ChangeHosts
+from models.change_hosts import ChangeHosts
 
 
 class ServerViewModel(QObject):

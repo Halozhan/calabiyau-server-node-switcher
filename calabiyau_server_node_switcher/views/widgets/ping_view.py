@@ -1,7 +1,7 @@
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout
 
-from ping_view_model import PingViewModel
+from viewmodels.ping_view_model import PingViewModel
 
 
 class PingView(QWidget):
