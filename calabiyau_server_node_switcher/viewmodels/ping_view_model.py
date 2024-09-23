@@ -5,18 +5,24 @@ from ping3 import ping
 
 class PingViewModel(QObject):
     ping_response = pyqtSignal(float)
+    recent_pings_signal = pyqtSignal(list)
 
     def __init__(self, ip):
         super().__init__()
         self.ip = ip
-        self.get_ping()
+        self.recent_pings = []
+        self.fetch_ping()
 
-    def get_ping(self):
+    def fetch_ping(self):
         self.ping_thread = PingWorker(self.ip)
-        self.ping_thread.ping_response.connect(self.emit_ping)
+        self.ping_thread.ping_response.connect(self.on_ping_response)
         self.ping_thread.start()
 
-    def emit_ping(self, ping_response):
+    def on_ping_response(self, ping_response):
+        if len(self.recent_pings) > 10:
+            self.recent_pings.pop(0)
+        self.recent_pings.append(ping_response)
+        self.recent_pings_signal.emit(self.recent_pings)
         self.ping_response.emit(ping_response)
 
 

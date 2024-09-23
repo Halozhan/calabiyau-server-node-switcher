@@ -6,18 +6,22 @@ from models.get_dns import query_domain
 
 
 class DomainViewModel(QObject):
-    server_list_changed = pyqtSignal()
+    server_list_changed = pyqtSignal(list)
 
     def __init__(self, domain: str):
         super().__init__()
         self.domain = domain
         self.server_list = []
-        self.server_list_view = dict()
         self.fetch_ip_addresses()
+
+    def emit_server_list(self):
+        self.server_list_changed.emit(self.server_list)
 
     def on_reset_button_clicked(self):
         # reset_button을 클릭하면 hosts 파일을 초기화
         ChangeHosts(self.domain, "").remove()
+        # 리셋 버튼을 누르면 다시 서버 리스트를 렌더링한다.
+        self.emit_server_list()
 
     def add_server(self, server: str):
         if server not in self.server_list:
@@ -26,7 +30,7 @@ class DomainViewModel(QObject):
             # 서버 리스트를 정렬
             self.server_list = sorted(self.server_list)
             # 서버 리스트가 변경되었음을 알림
-            self.server_list_changed.emit()
+            self.emit_server_list()
 
     def fetch_ip_addresses(self):
         self.workers = []
@@ -56,5 +60,6 @@ class DomainWorker(QThread):
             self.finished.emit(ip)
 
     def stop(self):
+        self._running = False
         self.quit()
         self.wait()

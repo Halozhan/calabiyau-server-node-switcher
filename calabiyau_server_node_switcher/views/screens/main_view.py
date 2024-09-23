@@ -5,7 +5,11 @@ from PyQt6.QtWidgets import (
     QTabWidget,
 )
 
-from views.widgets.domain_view import DomainView
+
+from viewmodels.manual_ip_view_model import ManualIPViewModel
+from viewmodels.domain_view_model import DomainViewModel
+
+from ..widgets.domain_widget import DomainWidget
 from models.domains import domains
 from views.widgets.manual_ip_view import ManualIPView
 
@@ -32,7 +36,8 @@ Please restart your game after changing the server"
 
         # Domain view
         for domain in domains:
-            self.domain_view = DomainView(domain)
+            self.domain_view_model = DomainViewModel(domain)
+            self.domain_view = DomainWidget(domain, self.domain_view_model)
             self.main_tab_layout.addWidget(self.domain_view)
 
         self.main_tab.setLayout(self.main_tab_layout)
@@ -43,9 +48,10 @@ Please restart your game after changing the server"
         self.manual_tab_layout = QHBoxLayout()
 
         # Manual IP View
+        self.tianjin_view_model = ManualIPViewModel("ds-tj-1.klbq.qq.com")
         self.tianjin = ManualIPView(
-            "ds-tj-1.klbq.qq.com",
-            [
+            domain="ds-tj-1.klbq.qq.com",
+            server_list=[
                 "111.30.170.175",
                 "111.33.110.226",
                 "116.130.228.105",
@@ -54,12 +60,14 @@ Please restart your game after changing the server"
                 "42.81.194.60",
                 "43.159.233.14",
             ],
+            view_model=self.tianjin_view_model,
         )
         self.manual_tab_layout.addWidget(self.tianjin)
 
+        self.nanjing_view_model = ManualIPViewModel("ds-nj-1.klbq.qq.com")
         self.nanjing = ManualIPView(
-            "ds-nj-1.klbq.qq.com",
-            [
+            domain="ds-nj-1.klbq.qq.com",
+            server_list=[
                 "112.80.183.27",
                 "121.229.92.16",
                 "180.110.193.185",
@@ -68,12 +76,14 @@ Please restart your game after changing the server"
                 "36.155.183.208",
                 "43.159.233.198",
             ],
+            view_model=self.nanjing_view_model,
         )
         self.manual_tab_layout.addWidget(self.nanjing)
 
+        self.guangzhou_view_model = ManualIPViewModel("ds-gz-1.klbq.qq.com")
         self.guangzhou = ManualIPView(
-            "ds-gz-1.klbq.qq.com",
-            [
+            domain="ds-gz-1.klbq.qq.com",
+            server_list=[
                 "120.232.24.96",
                 "120.233.18.175",
                 "14.29.103.46",
@@ -82,12 +92,14 @@ Please restart your game after changing the server"
                 "183.47.107.193",
                 "43.159.233.178",
             ],
+            view_model=self.guangzhou_view_model,
         )
         self.manual_tab_layout.addWidget(self.guangzhou)
 
+        self.chongqing_view_model = ManualIPViewModel("ds-cq-1.klbq.qq.com")
         self.chongqing = ManualIPView(
-            "ds-cq-1.klbq.qq.com",
-            [
+            domain="ds-cq-1.klbq.qq.com",
+            server_list=[
                 "111.10.11.250",
                 "111.10.11.73",
                 "113.250.9.54",
@@ -96,6 +108,7 @@ Please restart your game after changing the server"
                 "58.144.164.43",
                 "58.144.164.50",
             ],
+            view_model=self.chongqing_view_model,
         )
         self.manual_tab_layout.addWidget(self.chongqing)
 
