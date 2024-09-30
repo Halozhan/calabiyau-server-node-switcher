@@ -1,4 +1,5 @@
 from viewmodels.domain_view_model import DomainViewModel
+from viewmodels.server_view_model import ServerViewModel
 from .server_view import ServerView
 
 from PyQt6.QtWidgets import (
@@ -11,17 +12,17 @@ from PyQt6.QtWidgets import (
     QWidget,
     QLayout,
 )
+from PyQt6.QtCore import pyqtSlot
 
 
-class DomainView(QWidget):
-    def __init__(self, domain: str):
+class DomainWidget(QWidget):
+    def __init__(self, domain: str, view_model: DomainViewModel):
         super().__init__()
         self.domain = domain
-        self._view_model = DomainViewModel(self.domain)
+        self._view_model = view_model
         self._view_model.server_list_changed.connect(
             self.on_server_list_changed,
         )
-        self.server_list = []
         self.initUI()
 
     def initUI(self):
@@ -38,7 +39,9 @@ class DomainView(QWidget):
 
         # Reset button
         self.reset_button = QPushButton("set to default")
-        self.reset_button.clicked.connect(self.on_reset_button_clicked)
+        self.reset_button.clicked.connect(
+            self._view_model.on_reset_button_clicked,
+        )
         self.my_layout.addWidget(self.reset_button)
 
         # Server Layout
@@ -46,16 +49,12 @@ class DomainView(QWidget):
         self.select_server_group = QButtonGroup()
         self.my_layout.addLayout(self.server_list_layout)
 
-    def on_reset_button_clicked(self):
-        self._view_model.on_reset_button_clicked()
-        # 리셋 버튼을 누르면 다시 서버 리스트를 렌더링한다.
-        self.on_server_list_changed()
-
-    def on_server_list_changed(self):
+    @pyqtSlot(list)
+    def on_server_list_changed(self, server_list: list):
         # 서버 리스트가 변경되면 레이아웃을 지운다.
         self.clear_layout(self.server_list_layout)
         # 서버 리스트를 다시 렌더링한다.
-        self.render_server_list()
+        self.render_server_list(server_list)
 
     def clear_layout(self, layout: QLayout):
         # 레이아웃에 있는 모든 위젯을 제거
@@ -73,9 +72,13 @@ class DomainView(QWidget):
                     print("sub_layout")
                     self.clear_layout(sub_layout)
 
-    def render_server_list(self):
-        for ip in self._view_model.server_list:
-            if ip not in self.server_list:
-                server = ServerView(self.domain, ip, self.select_server_group)
-                self.server_list.append(server)
-                self.server_list_layout.addWidget(server)
+    def render_server_list(self, server_list: list):
+        for ip in server_list:
+            self.server_view_model = ServerViewModel(self.domain, ip)
+            self.server = ServerView(
+                domain=self.domain,
+                ip=ip,
+                button_group=self.select_server_group,
+                view_model=self.server_view_model,
+            )
+            self.server_list_layout.addWidget(self.server)

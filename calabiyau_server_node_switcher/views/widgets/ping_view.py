@@ -1,5 +1,6 @@
 from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout
+from PyQt6.QtCore import pyqtSlot
 
 from viewmodels.ping_view_model import PingViewModel
 
@@ -31,6 +32,7 @@ class PingView(QWidget):
 
         self.setLayout(self.my_layout)
 
+    @pyqtSlot(float)
     def on_ping_response(self, ping):
         self.set_ping_label(ping)
         self.set_ping_indicator(ping)

@@ -1,3 +1,4 @@
+from viewmodels.server_view_model import ServerViewModel
 from viewmodels.manual_ip_view_model import ManualIPViewModel
 from .server_view import ServerView
 
@@ -14,10 +15,15 @@ from PyQt6.QtWidgets import (
 
 
 class ManualIPView(QWidget):
-    def __init__(self, domain: str, server_list: list):
+    def __init__(
+        self,
+        domain: str,
+        server_list: list,
+        view_model: ManualIPViewModel,
+    ):
         super().__init__()
         self.domain = domain
-        self._view_model = ManualIPViewModel(self.domain)
+        self._view_model = view_model
         self._view_model.server_list = server_list
         self._view_model.server_list_changed.connect(
             self.on_server_list_changed,
@@ -78,6 +84,12 @@ class ManualIPView(QWidget):
     def render_server_list(self):
         for ip in self._view_model.server_list:
             if ip not in self.server_list:
-                server = ServerView(self.domain, ip, self.select_server_group)
+                server_view_model = ServerViewModel(self.domain, ip)
+                server = ServerView(
+                    domain=self.domain,
+                    ip=ip,
+                    button_group=self.select_server_group,
+                    view_model=server_view_model,
+                )
                 self.server_list.append(server)
                 self.server_list_layout.addWidget(server)

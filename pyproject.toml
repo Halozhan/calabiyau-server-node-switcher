@@ -1,0 +1,18 @@
+[project]
+name = "calabiyau_server_node_switcher"
+version = "2024.906.0"
+description = "This is a simple server node switcher for Calabiyau(卡拉彼丘) game."
+authors = [
+  {name = "Halozhan", email = "juwonhwang0411@gmail.com"}
+]
+maintainers = [
+  {name = "Halozhan", email = "juwonhwang0411@gmail.com" }
+]
+
+dependencies = [
+    "dnspython>=2.6.1",
+    "ping3>=4.0.8",
+    "PyQt6>=6.7.1",
+    "python-hosts>=1.0.7",
+    "pyinstaller>=6.10.0"
+]
