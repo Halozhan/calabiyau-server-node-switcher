@@ -22,3 +22,9 @@ Avoid 43.159.233.xxx if possible, except for Guangzhou(广州). Those servers ar
 
 ## How to restore hosts file
 There are 4 buttons each. "set to default" button can restore hosts file to default.
+
+
+## Contribution
+```sh
+pip install -e .
+```
