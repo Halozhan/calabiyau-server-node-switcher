@@ -27,4 +27,5 @@ There are 4 buttons each. "set to default" button can restore hosts file to defa
 ## Contribution
 ```sh
 pip install -e .
+pyinstaller calabiyau_server_node_switcher.spec
 ```
