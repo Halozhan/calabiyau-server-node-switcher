@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: calabiyau_server_node_switcher
+Version: 2024.906.0
+Summary: This is a simple server node switcher for Calabiyau(卡拉彼丘) game.
+Author-email: Halozhan <juwonhwang0411@gmail.com>
+Maintainer-email: Halozhan <juwonhwang0411@gmail.com>
+Requires-Dist: dnspython>=2.6.1
+Requires-Dist: ping3>=4.0.8
+Requires-Dist: PyQt6>=6.7.1
+Requires-Dist: python-hosts>=1.0.7
+Requires-Dist: pyinstaller>=6.10.0
