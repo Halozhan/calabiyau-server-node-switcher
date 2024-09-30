@@ -1,0 +1,117 @@
+﻿<Window x:Class="CalabiyauServerNodeSwitcher.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CalabiyauServerNodeSwitcher"
+        mc:Ignorable="d"
+        Title="卡拉彼丘" Height="450" Width="Auto">
+    <Window.Resources>
+        <Style TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Reusable DataTemplates -->
+        <DataTemplate x:Key="IPAddressTemplate">
+            <TextBox Text="{Binding IPAddress}" IsReadOnly="True" BorderThickness="0" Background="Transparent">
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy" Click="CopyIPAddress"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
+            </TextBox>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PingTemplate">
+            <TextBlock Text="{Binding Ping.AveragePing, StringFormat={}{0:F2}}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Ping.LowestPing, StringFormat='Low: {0:F2}'}" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Ping.HighestPing, StringFormat='High: {0:F2}'}" FontWeight="Bold"/>
+                        </StackPanel>
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PingStdDeviationTemplate">
+            <TextBlock Text="{Binding Ping.StdDeviation, StringFormat={}{0:F2}}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VPNRadioButtonTemplate">
+            <StackPanel Orientation="Horizontal">
+                <RadioButton GroupName="VPN1"/>
+                <TextBlock Text="{Binding VPN}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Domain Headers -->
+        <TextBox Text="Domain: ds-tj-1.klbq.qq.com" Grid.Row="0" Grid.Column="0" Margin="5" IsReadOnly="True"/>
+        <TextBox Text="Domain: ds-nj-1.klbq.qq.com" Grid.Row="0" Grid.Column="1" Margin="5" IsReadOnly="True"/>
+        <TextBox Text="Domain: ds-gz-1.klbq.qq.com" Grid.Row="0" Grid.Column="2" Margin="5" IsReadOnly="True"/>
+        <TextBox Text="Domain: ds-cq-1.klbq.qq.com" Grid.Row="0" Grid.Column="3" Margin="5" IsReadOnly="True"/>
+
+        <!-- Server Information Lists -->
+        <ListView Grid.Row="1" Grid.Column="0" Margin="5" Name="tianjin_servers">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                    <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                    <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                    <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.LossRate, StringFormat={}{0:F2}}"/>
+                    <GridViewColumn Header="VPN" Width="80" CellTemplate="{StaticResource VPNRadioButtonTemplate}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <ListView Grid.Row="1" Grid.Column="1" Margin="5" Name="nanjing_servers">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                    <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                    <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                    <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.LossRate, StringFormat={}{0:F2}}"/>
+                    <GridViewColumn Header="VPN" Width="80" CellTemplate="{StaticResource VPNRadioButtonTemplate}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <ListView Grid.Row="1" Grid.Column="2" Margin="5" Name="guangzhou_servers">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                    <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                    <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                    <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.LossRate, StringFormat={}{0:F2}}"/>
+                    <GridViewColumn Header="VPN" Width="80" CellTemplate="{StaticResource VPNRadioButtonTemplate}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <ListView Grid.Row="1" Grid.Column="3" Margin="5" Name="chongqing_servers">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                    <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                    <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                    <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.LossRate, StringFormat={}{0:F2}}"/>
+                    <GridViewColumn Header="VPN" Width="80" CellTemplate="{StaticResource VPNRadioButtonTemplate}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>
