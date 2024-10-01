@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CalabiyauServerNodeSwitcher"
+        xmlns:local="clr-namespace:CalabiyauServerNodeSwitcher.Views"
         mc:Ignorable="d"
-        Title="卡拉彼丘" Height="450" Width="Auto">
+        Title="卡拉彼丘"
+        SizeToContent="WidthAndHeight">
     <Window.Resources>
         <Style TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -22,8 +23,30 @@
             </TextBox>
         </DataTemplate>
 
+        <DataTemplate x:Key="ScoreTemplate">
+            <TextBlock Text="{Binding Ping.Score, StringFormat={}{0:F2}}">
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Ping.Score, StringFormat='Score: {0:F2} (Lower is better)'}" FontWeight="Bold"/>
+                            <TextBlock Text="Score = (AveragePing + StdDeviation) * (1 + LossRate / 10)"/>
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="Score = ({0:F2} + {1:F2}) * (1 + {2:F2} / 10)">
+                                        <Binding Path="Ping.AveragePing"/>
+                                        <Binding Path="Ping.StdDeviation"/>
+                                        <Binding Path="Ping.LossRate"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
+        </DataTemplate>
+
         <DataTemplate x:Key="PingTemplate">
-            <TextBlock Text="{Binding Ping.AveragePing, StringFormat={}{0:F2}}">
+            <TextBlock Text="{Binding Ping.RecentAveragePing, StringFormat={}{0:F2}}">
                 <TextBlock.ToolTip>
                     <ToolTip>
                         <StackPanel>
@@ -35,83 +58,128 @@
             </TextBlock>
         </DataTemplate>
 
-        <DataTemplate x:Key="PingStdDeviationTemplate">
-            <TextBlock Text="{Binding Ping.StdDeviation, StringFormat={}{0:F2}}"/>
+        <DataTemplate x:Key="LowestPingTemplate">
+            <TextBlock Text="{Binding Ping.LowestPing, StringFormat={}{0:F2}}"/>
         </DataTemplate>
 
-        <DataTemplate x:Key="VPNRadioButtonTemplate">
-            <StackPanel Orientation="Horizontal">
-                <RadioButton GroupName="VPN1"/>
-                <TextBlock Text="{Binding VPN}"/>
-            </StackPanel>
+        <DataTemplate x:Key="HighestPingTemplate">
+            <TextBlock Text="{Binding Ping.HighestPing, StringFormat={}{0:F2}}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PingStdDeviationTemplate">
+            <TextBlock Text="{Binding Ping.StdDeviation, StringFormat={}{0:F2}}"/>
         </DataTemplate>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Domain Headers -->
-        <TextBox Text="Domain: ds-tj-1.klbq.qq.com" Grid.Row="0" Grid.Column="0" Margin="5" IsReadOnly="True"/>
-        <TextBox Text="Domain: ds-nj-1.klbq.qq.com" Grid.Row="0" Grid.Column="1" Margin="5" IsReadOnly="True"/>
-        <TextBox Text="Domain: ds-gz-1.klbq.qq.com" Grid.Row="0" Grid.Column="2" Margin="5" IsReadOnly="True"/>
-        <TextBox Text="Domain: ds-cq-1.klbq.qq.com" Grid.Row="0" Grid.Column="3" Margin="5" IsReadOnly="True"/>
-
         <!-- Server Information Lists -->
-        <ListView Grid.Row="1" Grid.Column="0" Margin="5" Name="tianjin_servers">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
-                    <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
-                    <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
-                    <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.LossRate, StringFormat={}{0:F2}}"/>
-                    <GridViewColumn Header="VPN" Width="80" CellTemplate="{StaticResource VPNRadioButtonTemplate}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <!--chongqing-->
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="5">
+            <TextBox Text="Domain: ds-cq-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
+            <ListView Name="chongqing_servers">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                        <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
+                        <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                        <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
+                        <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
+                        <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                        <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
+                        <GridViewColumn Header="Selection" Width="60">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <RadioButton GroupName="chongqing_group" IsChecked="{Binding IsSelected}" Click="ChongqingButton_Click"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </StackPanel>
 
-        <ListView Grid.Row="1" Grid.Column="1" Margin="5" Name="nanjing_servers">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
-                    <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
-                    <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
-                    <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.LossRate, StringFormat={}{0:F2}}"/>
-                    <GridViewColumn Header="VPN" Width="80" CellTemplate="{StaticResource VPNRadioButtonTemplate}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <!--tianjin-->
+        <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
+            <TextBox Text="Domain: ds-tj-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
+            <ListView Name="tianjin_servers">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                        <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
+                        <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                        <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
+                        <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
+                        <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                        <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
+                        <GridViewColumn Header="Selection" Width="60">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <RadioButton GroupName="tianjin_group" IsChecked="{Binding IsSelected}" Click="TianjinButton_Click"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </StackPanel>
 
-        <ListView Grid.Row="1" Grid.Column="2" Margin="5" Name="guangzhou_servers">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
-                    <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
-                    <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
-                    <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.LossRate, StringFormat={}{0:F2}}"/>
-                    <GridViewColumn Header="VPN" Width="80" CellTemplate="{StaticResource VPNRadioButtonTemplate}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <!--guangzhou-->
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="5">
+            <TextBox Text="Domain: ds-gz-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
+            <ListView Name="guangzhou_servers">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                        <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
+                        <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                        <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
+                        <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
+                        <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                        <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
+                        <GridViewColumn Header="Selection" Width="60">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <RadioButton GroupName="guangzhou_group" IsChecked="{Binding IsSelected}" Click="GuangzhouButton_Click"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </StackPanel>
 
-        <ListView Grid.Row="1" Grid.Column="3" Margin="5" Name="chongqing_servers">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
-                    <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
-                    <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
-                    <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.LossRate, StringFormat={}{0:F2}}"/>
-                    <GridViewColumn Header="VPN" Width="80" CellTemplate="{StaticResource VPNRadioButtonTemplate}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <!--nanjing-->
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
+            <TextBox Text="Domain: ds-nj-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
+            <ListView Name="nanjing_servers">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                        <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
+                        <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                        <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
+                        <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
+                        <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                        <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
+                        <GridViewColumn Header="Selection" Width="60">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <RadioButton GroupName="nanjing_group" IsChecked="{Binding IsSelected}" Click="NanjingButton_Click"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </StackPanel>
     </Grid>
 </Window>
