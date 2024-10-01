@@ -6,7 +6,7 @@ namespace CalabiyauServerNodeSwitcher.Models
     {
         private string ipAddress;
         private Ping ping;
-        private bool? vpn;
+        private bool isSelected;
 
         public string IPAddress
         {
@@ -20,10 +20,10 @@ namespace CalabiyauServerNodeSwitcher.Models
             set => SetProperty(ref ping, value);
         }
 
-        public bool? VPN
+        public bool IsSelected
         {
-            get => vpn;
-            set => SetProperty(ref vpn, value);
+            get => isSelected;
+            set => SetProperty(ref isSelected, value);
         }
     }
 }
