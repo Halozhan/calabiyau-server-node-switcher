@@ -10,66 +10,115 @@ namespace CalabiyauServerNodeSwitcher.Services
     {
         private string ipAddress;
         private int port;
-
-        private UdpClient udpClient;
         private const int TIMEOUT = 1000; // 1초 타임아웃
         private IPEndPoint remoteEndPoint;
         private byte[] sendBytes;
         private byte[] receiveBytes;
+        private object lockObject = new object();
+        private UdpClient udpClient;
+        private Stopwatch stopwatch;
 
         public GetUDPPingTime(string ipAddress, int port)
         {
             this.ipAddress = ipAddress;
             this.port = port;
-            udpClient = new UdpClient();
-
-            remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            remoteEndPoint = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             sendBytes = Encoding.ASCII.GetBytes("a");
+            stopwatch = new Stopwatch();
+
+            CreateClient();
+        }
+
+        public void CreateClient()
+        {
+            lock (lockObject)
+            {
+                if (udpClient != null)
+                {
+                    ClientClose();
+                }
+
+                udpClient = new UdpClient();
+                udpClient.Client.ReceiveTimeout = TIMEOUT; // 1초 타임아웃 설정
+                udpClient.Connect(remoteEndPoint);
+            }
+        }
+
+        public void ClientClose()
+        {
+            lock (lockObject)
+            {
+                if (udpClient != null)
+                {
+                    udpClient.Close();
+                    udpClient.Dispose();
+                    udpClient = null;
+                }
+            }
+        }
+
+        public void ReEstablishConnection()
+        {
+            ClientClose();
+            CreateClient();
         }
 
         public float QueryPing()
         {
             float ping = -1;
 
-            try
+            lock (lockObject)
             {
-                udpClient.Connect(ipAddress, port);
-                udpClient.Client.ReceiveTimeout = TIMEOUT; // 1초 타임아웃 설정
+                if (udpClient == null)
+                {
+                    CreateClient();
+                }
 
-                Stopwatch stopwatch = new Stopwatch();
+                
+                try
+                {
+                    udpClient.Connect(remoteEndPoint);
 
-                stopwatch.Start();
-                udpClient.Send(sendBytes, sendBytes.Length);
+                    stopwatch.Reset();
+                    stopwatch.Start();
+                    udpClient.Send(sendBytes, sendBytes.Length);
 
-                receiveBytes = udpClient.Receive(ref remoteEndPoint);
-                stopwatch.Stop();
+                    receiveBytes = udpClient.Receive(ref remoteEndPoint);
+                    stopwatch.Stop();
 
-                ping = stopwatch.ElapsedTicks / (float)Stopwatch.Frequency * 1000;
-            }
-            catch (SocketException e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-            catch (PingException e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
+                    // 보낸 값과 받은 값이 같은지 확인
+                    if (Encoding.ASCII.GetString(receiveBytes) != Encoding.ASCII.GetString(sendBytes))
+                    {
+                        throw new Exception("wrong value");
+                    }
+
+                    ping = stopwatch.ElapsedTicks / (float)Stopwatch.Frequency * 1000;
+                }
+                catch (SocketException e)
+                {
+                    if (e.SocketErrorCode == SocketError.TimedOut)
+                    {
+                        // 타임아웃
+                        //Trace.WriteLine(ipAddress + ": Timed out");
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Error pinging server " + ipAddress + ": " + e.SocketErrorCode + " " + e.Message);
+                    }
+                }
+                catch (PingException)
+                {
+                    // 핑이 너무 높아서 응답이 없을 때
+                }
+                catch (Exception e)
+                {
+                    // 그 외의 예외
+                    Trace.TraceError("Error pinging server " + ipAddress + ": " + e.Message);
+                }
+                
             }
 
             return ping;
-        }
-
-        public async Task<float> AsyncQueryPing()
-        {
-            return await Task.Run(() => QueryPing());
-        }
-
-        public void Close()
-        {
-            udpClient.Close();
         }
     }
 }
