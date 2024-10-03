@@ -4,9 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CalabiyauServerNodeSwitcher.Views"
+        xmlns:vm="clr-namespace:CalabiyauServerNodeSwitcher.ViewModels"
         mc:Ignorable="d"
         Title="卡拉彼丘"
         SizeToContent="WidthAndHeight">
+    <Window.DataContext>
+        <vm:ServerListViewModel/>
+    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -29,6 +33,7 @@
                     <ToolTip>
                         <StackPanel>
                             <TextBlock Text="{Binding Ping.Score, StringFormat='Score: {0:F2} (Lower is better)'}" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Ping.RecentScore, StringFormat='Recent Score: {0:F2}'}" FontWeight="Bold"/>
                             <TextBlock Text="Score = (AveragePing + StdDeviation) * (1 + LossRate / 10)"/>
                             <TextBlock>
                                 <TextBlock.Text>
@@ -85,7 +90,7 @@
         <!--chongqing-->
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="5">
             <TextBox Text="Domain: ds-cq-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
-            <ListView Name="chongqing_servers">
+            <ListView Name="chongqing_servers" ItemsSource="{Binding ChongqingServerList}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
@@ -98,7 +103,10 @@
                         <GridViewColumn Header="Selection" Width="60">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <RadioButton GroupName="chongqing_group" IsChecked="{Binding IsSelected}" Click="ChongqingButton_Click"/>
+                                    <RadioButton
+                                        GroupName="chongqing_group"
+                                        IsChecked="{Binding IsSelected}"
+                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -110,7 +118,7 @@
         <!--tianjin-->
         <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
             <TextBox Text="Domain: ds-tj-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
-            <ListView Name="tianjin_servers">
+            <ListView Name="tianjin_servers" ItemsSource="{Binding TianjinServerList}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
@@ -123,7 +131,10 @@
                         <GridViewColumn Header="Selection" Width="60">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <RadioButton GroupName="tianjin_group" IsChecked="{Binding IsSelected}" Click="TianjinButton_Click"/>
+                                    <RadioButton
+                                        GroupName="tianjin_group"
+                                        IsChecked="{Binding IsSelected}"
+                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -135,7 +146,7 @@
         <!--guangzhou-->
         <StackPanel Grid.Row="1" Grid.Column="0" Margin="5">
             <TextBox Text="Domain: ds-gz-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
-            <ListView Name="guangzhou_servers">
+            <ListView Name="guangzhou_servers" ItemsSource="{Binding GuangzhouServerList}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
@@ -148,7 +159,10 @@
                         <GridViewColumn Header="Selection" Width="60">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <RadioButton GroupName="guangzhou_group" IsChecked="{Binding IsSelected}" Click="GuangzhouButton_Click"/>
+                                    <RadioButton
+                                        GroupName="guangzhou_group"
+                                        IsChecked="{Binding IsSelected}"
+                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -160,7 +174,7 @@
         <!--nanjing-->
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
             <TextBox Text="Domain: ds-nj-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
-            <ListView Name="nanjing_servers">
+            <ListView Name="nanjing_servers" ItemsSource="{Binding NanjingServerList}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
@@ -173,7 +187,10 @@
                         <GridViewColumn Header="Selection" Width="60">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <RadioButton GroupName="nanjing_group" IsChecked="{Binding IsSelected}" Click="NanjingButton_Click"/>
+                                    <RadioButton
+                                        GroupName="nanjing_group"
+                                        IsChecked="{Binding IsSelected}"
+                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
