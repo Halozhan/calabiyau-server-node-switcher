@@ -28,7 +28,6 @@ namespace CalabiyauServerNodeSwitcher.Models
                 }
                 pingList.Add(value);
 
-                CalculateScore();
                 CalculateAveragePing();
                 CalculateRecentAveragePing();
                 CalculateLossRate();
@@ -36,19 +35,10 @@ namespace CalabiyauServerNodeSwitcher.Models
                 CalculateLowestPing();
                 CalculateHighestPing();
                 CalculateStdDeviation();
+                CalculateRecentStdDeviation();
+                CalculateScore();
+                CalculateRecentScore();
             }
-        }
-
-        // 점수
-        private double score;
-        public double Score
-        {
-            get => score;
-            private set => SetProperty(ref score, value);
-        }
-        private void CalculateScore()
-        {
-            Score = (AveragePing + StdDeviation) * (1 + LossRate / 10);
         }
 
         // 평균 Ping
@@ -230,6 +220,67 @@ namespace CalabiyauServerNodeSwitcher.Models
                 }
             }
             StdDeviation = Math.Sqrt(sumOfSquaresOfDifferences / count);
+        }
+
+        // 최근 표준편차
+        private double recentStdDeviation;
+        public double RecentStdDeviation
+        {
+            get => recentStdDeviation;
+            private set => SetProperty(ref recentStdDeviation, value);
+        }
+        private void CalculateRecentStdDeviation()
+        {
+            double sum = 0;
+            int count = 0;
+
+            // 최근 1초 핑의 항목을 가져옵니다.
+            var recentPingList = pingList.Skip(Math.Max(0, pingList.Count - PING_PER_SECOND)).Take(PING_PER_SECOND);
+
+            foreach (var latency in recentPingList)
+            {
+                if (latency >= 0)
+                {
+                    sum += latency;
+                    count++;
+                }
+            }
+            double mean = sum / count;
+
+            double sumOfSquaresOfDifferences = 0;
+
+            foreach (var latency in recentPingList)
+            {
+                if (latency >= 0)
+                {
+                    sumOfSquaresOfDifferences += (latency - mean) * (latency - mean);
+                }
+            }
+            RecentStdDeviation = Math.Sqrt(sumOfSquaresOfDifferences / count);
+        }
+
+        // 점수
+        private double score;
+        public double Score
+        {
+            get => score;
+            private set => SetProperty(ref score, value);
+        }
+        private void CalculateScore()
+        {
+            Score = (AveragePing + StdDeviation) * (1 + LossRate / 10);
+        }
+
+        // 최근 점수 실시간 최적 서버 계산용
+        private double recentScore;
+        public double RecentScore
+        {
+            get => recentScore;
+            private set => SetProperty(ref recentScore, value);
+        }
+        private void CalculateRecentScore()
+        {
+            RecentScore = (RecentAveragePing + StdDeviation) * (1 + LossRate / 10);
         }
     }
 }
