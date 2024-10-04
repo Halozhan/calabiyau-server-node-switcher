@@ -8,37 +8,52 @@ namespace CalabiyauServerNodeSwitcher.Models
         private const int PING_PER_SECOND = 100; // 100 pings per second
         private const int MAX_PING_COUNT = PING_PER_SECOND * SECONDS_TO_BE_SAVED;
         private readonly List<float> pingList;
+        private readonly object lockObject = new object();
 
         public Ping()
         {
             pingList = new List<float>(MAX_PING_COUNT);
             recentAveragePing = 0.0;
             recentLossRate = 0.0;
-            lowestPing = double.MaxValue;
-            highestPing = double.MinValue;
+            lowestPing = 0.0;
+            highestPing = 0.0;
         }
 
         public float AddPing
         {
             set
             {
-                while (pingList.Count >= MAX_PING_COUNT)
+                lock (lockObject)
                 {
-                    pingList.RemoveAt(0);
-                }
-                pingList.Add(value);
+                    while (pingList.Count >= MAX_PING_COUNT)
+                    {
+                        pingList.RemoveAt(0);
+                    }
+                    pingList.Add(value);
 
-                CalculateAveragePing();
-                CalculateRecentAveragePing();
-                CalculateLossRate();
-                CalculateRecentLossRate();
-                CalculateLowestPing();
-                CalculateHighestPing();
-                CalculateStdDeviation();
-                CalculateRecentStdDeviation();
-                CalculateScore();
-                CalculateRecentScore();
+                    CalculateLastPing();
+                    CalculateAveragePing();
+                    CalculateRecentAveragePing();
+                    CalculateLossRate();
+                    CalculateRecentLossRate();
+                    CalculateLowestPing();
+                    CalculateHighestPing();
+                    CalculateStdDeviation();
+                    CalculateScore();
+                }
             }
+        }
+
+        // Last Ping
+        private double lastPing;
+        public double LastPing
+        {
+            get => lastPing;
+            set => SetProperty(ref lastPing, value);
+        }
+        private void CalculateLastPing()
+        {
+            LastPing = pingList.Last();
         }
 
         // 평균 Ping
@@ -222,44 +237,7 @@ namespace CalabiyauServerNodeSwitcher.Models
             StdDeviation = Math.Sqrt(sumOfSquaresOfDifferences / count);
         }
 
-        // 최근 표준편차
-        private double recentStdDeviation;
-        public double RecentStdDeviation
-        {
-            get => recentStdDeviation;
-            private set => SetProperty(ref recentStdDeviation, value);
-        }
-        private void CalculateRecentStdDeviation()
-        {
-            double sum = 0;
-            int count = 0;
-
-            // 최근 1초 핑의 항목을 가져옵니다.
-            var recentPingList = pingList.Skip(Math.Max(0, pingList.Count - PING_PER_SECOND)).Take(PING_PER_SECOND);
-
-            foreach (var latency in recentPingList)
-            {
-                if (latency >= 0)
-                {
-                    sum += latency;
-                    count++;
-                }
-            }
-            double mean = sum / count;
-
-            double sumOfSquaresOfDifferences = 0;
-
-            foreach (var latency in recentPingList)
-            {
-                if (latency >= 0)
-                {
-                    sumOfSquaresOfDifferences += (latency - mean) * (latency - mean);
-                }
-            }
-            RecentStdDeviation = Math.Sqrt(sumOfSquaresOfDifferences / count);
-        }
-
-        // 점수
+        // Score (lower is better)
         private double score;
         public double Score
         {
@@ -269,18 +247,6 @@ namespace CalabiyauServerNodeSwitcher.Models
         private void CalculateScore()
         {
             Score = (AveragePing + StdDeviation) * (1 + LossRate / 10);
-        }
-
-        // 최근 점수 실시간 최적 서버 계산용
-        private double recentScore;
-        public double RecentScore
-        {
-            get => recentScore;
-            private set => SetProperty(ref recentScore, value);
-        }
-        private void CalculateRecentScore()
-        {
-            RecentScore = (RecentAveragePing + StdDeviation) * (1 + LossRate / 10);
         }
     }
 }

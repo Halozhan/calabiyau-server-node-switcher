@@ -1,4 +1,4 @@
-﻿using CalabiyauServerNodeSwitcher.Models;
+using CalabiyauServerNodeSwitcher.Models;
 using CalabiyauServerNodeSwitcher.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -236,8 +236,8 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
         private static void SelectLowestScoreServer(List<ServerInfo> serverInfoList)
         {
             var lowestScoreServer = serverInfoList
-                .Where(s => s.Ping.RecentScore >= 0)
-                .OrderBy(s => s.Ping.RecentScore).FirstOrDefault();
+                .Where(s => s.Ping.Score >= 0)
+                .OrderBy(s => s.Ping.Score).FirstOrDefault();
 
             if (lowestScoreServer != null)
             {

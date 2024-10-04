@@ -33,7 +33,6 @@
                     <ToolTip>
                         <StackPanel>
                             <TextBlock Text="{Binding Ping.Score, StringFormat='Score: {0:F2} (Lower is better)'}" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding Ping.RecentScore, StringFormat='Recent Score: {0:F2}'}" FontWeight="Bold"/>
                             <TextBlock Text="Score = (AveragePing + StdDeviation) * (1 + LossRate / 10)"/>
                             <TextBlock>
                                 <TextBlock.Text>
@@ -55,6 +54,7 @@
                 <TextBlock.ToolTip>
                     <ToolTip>
                         <StackPanel>
+                            <TextBlock Text="{Binding Ping.LastPing, StringFormat='Last: {0:F2}'}" FontWeight="Bold"/>
                             <TextBlock Text="{Binding Ping.LowestPing, StringFormat='Low: {0:F2}'}" FontWeight="Bold"/>
                             <TextBlock Text="{Binding Ping.HighestPing, StringFormat='High: {0:F2}'}" FontWeight="Bold"/>
                         </StackPanel>
