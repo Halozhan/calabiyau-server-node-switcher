@@ -1,4 +1,4 @@
-using CalabiyauServerNodeSwitcher.Models;
+﻿using CalabiyauServerNodeSwitcher.Models;
 using CalabiyauServerNodeSwitcher.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -162,26 +162,31 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
         private static async void UpdatePing(ServerInfo serverInfo)
         {
             const ushort SECOND = 1000;
-            const ushort PACKET_PER_SECOND = 100;
-            const uint REFRESH_INTERVAL = 25;
+            const ushort PACKET_PER_SECOND = 10;
             const ushort PING_INTERVAL = SECOND / PACKET_PER_SECOND;
+            const uint REFRESH_CONNECTION_SECOND = 5;
+            const uint REFRESH_INTERVAL = PACKET_PER_SECOND * REFRESH_CONNECTION_SECOND;
             const ushort PORT = 6001;
             var udpClient = new GetUDPPingTime(serverInfo.IPAddress, PORT);
 
             while (true)
             {
+                var pingTasks = new List<Task>();
+
                 for (int i = 0; i < REFRESH_INTERVAL; i++)
                 {
-                    serverInfo.Ping.AddPing = udpClient.QueryPing();
+                    pingTasks.Add(Task.Run(() => serverInfo.Ping.AddPing = udpClient.QueryPing()));
                     await Task.Delay(PING_INTERVAL);
                 }
+
+                await Task.WhenAll(pingTasks);
                 udpClient.ClientClose();
             }
         }
 
         private void UpdateServerSelection()
         {
-            const int UPDATE_INTERVAL = 250;
+            const int UPDATE_INTERVAL = 5000;
             while (true)
             {
                 Task.Delay(UPDATE_INTERVAL).Wait();
