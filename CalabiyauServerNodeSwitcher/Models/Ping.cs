@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CalabiyauServerNodeSwitcher.Models
 {
@@ -246,7 +246,7 @@ namespace CalabiyauServerNodeSwitcher.Models
         }
         private void CalculateScore()
         {
-            Score = (AveragePing + StdDeviation) * (1 + LossRate / 10);
+            Score = (AveragePing + StdDeviation) * (1 + LossRate / 4);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿<Window x:Class="CalabiyauServerNodeSwitcher.Views.MainWindow"
+<Window x:Class="CalabiyauServerNodeSwitcher.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -33,10 +33,10 @@
                     <ToolTip>
                         <StackPanel>
                             <TextBlock Text="{Binding Ping.Score, StringFormat='Score: {0:F2} (Lower is better)'}" FontWeight="Bold"/>
-                            <TextBlock Text="Score = (AveragePing + StdDeviation) * (1 + LossRate / 10)"/>
+                            <TextBlock Text="Score = (AveragePing + StdDeviation) * (1 + LossRate / 4)"/>
                             <TextBlock>
                                 <TextBlock.Text>
-                                    <MultiBinding StringFormat="Score = ({0:F2} + {1:F2}) * (1 + {2:F2} / 10)">
+                                    <MultiBinding StringFormat="Score = ({0:F2} + {1:F2}) * (1 + {2:F2} / 4)">
                                         <Binding Path="Ping.AveragePing"/>
                                         <Binding Path="Ping.StdDeviation"/>
                                         <Binding Path="Ping.LossRate"/>
