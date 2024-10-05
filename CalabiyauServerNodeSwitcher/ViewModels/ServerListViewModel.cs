@@ -2,17 +2,23 @@
 using CalabiyauServerNodeSwitcher.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Diagnostics;
+using System.Windows.Input;
 
 namespace CalabiyauServerNodeSwitcher.ViewModels
 {
     public class ServerListViewModel : ObservableObject
     {
+        private CancellationTokenSource _cancellationTokenSource;
+
         public ServerListViewModel()
         {
             InitServerList();
+            ToggleAutoFindCommand = new RelayCommand(ToggleAutoFind);
+            RefreshCommand = new RelayCommand(Refresh);
+            ResetCommand = new RelayCommand(Reset);
             GroupButtonCommand = new RelayCommand(ExecuteGroupButtonCommand);
             Task.Run(() => UpdatePingEach());
-            Task.Run(() => UpdateServerSelection());
         }
 
         private List<ServerInfo> _chongqingServerList = new List<ServerInfo>();
@@ -69,7 +75,6 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
                 }
             }
 
-
             // tianjin
             TianjinServerList = new List<ServerInfo>
             {
@@ -93,7 +98,6 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
                     serverInfo.IsSelected = true;
                 }
             }
-
 
             // guangzhou
             GuangzhouServerList = new List<ServerInfo>
@@ -119,8 +123,6 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
                 }
             }
 
-
-
             // nanjing
             NanjingServerList = new List<ServerInfo>
             {
@@ -143,6 +145,61 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
                     serverInfo.IsSelected = true;
                 }
             }
+        }
+
+        private bool isAutoFindEnabled;
+        public bool IsAutoFindEnabled
+        {
+            get => isAutoFindEnabled;
+            set => SetProperty(ref isAutoFindEnabled, value);
+        }
+
+        public ICommand ToggleAutoFindCommand { get; }
+        public ICommand RefreshCommand { get; }
+        public ICommand ResetCommand { get; }
+
+        private void ToggleAutoFind()
+        {
+            // Implement the logic to enable/disable auto-find
+            if (IsAutoFindEnabled)
+            {
+                _cancellationTokenSource = new CancellationTokenSource();
+                Task.Run(() => SelectBestServer(_cancellationTokenSource.Token));
+            }
+            else
+            {
+                _cancellationTokenSource.Cancel();
+            }
+        }
+
+        private void Refresh()
+        {
+            // Implement the logic to refresh the server list
+            ChongqingServerList.ForEach(s => s.Ping.ClearPing());
+            TianjinServerList.ForEach(s => s.Ping.ClearPing());
+            GuangzhouServerList.ForEach(s => s.Ping.ClearPing());
+            NanjingServerList.ForEach(s => s.Ping.ClearPing());
+        }
+
+        private void Reset()
+        {
+            // Set IsAutoFindEnabled to false and notify the UI
+            IsAutoFindEnabled = false;
+
+            // Cancel the ongoing task if any
+            _cancellationTokenSource?.Cancel();
+
+            // Remove domains from HostsManager
+            HostsManager.Instance.RemoveDomain("ds-cq-1.klbq.qq.com");
+            HostsManager.Instance.RemoveDomain("ds-tj-1.klbq.qq.com");
+            HostsManager.Instance.RemoveDomain("ds-gz-1.klbq.qq.com");
+            HostsManager.Instance.RemoveDomain("ds-nj-1.klbq.qq.com");
+
+            // Deselect all servers
+            ChongqingServerList.ForEach(s => s.IsSelected = false);
+            TianjinServerList.ForEach(s => s.IsSelected = false);
+            GuangzhouServerList.ForEach(s => s.IsSelected = false);
+            NanjingServerList.ForEach(s => s.IsSelected = false);
         }
 
         private void UpdatePingEach()
@@ -184,16 +241,36 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
             }
         }
 
-        private void UpdateServerSelection()
+        private void SelectBestServer(CancellationToken cancellationToken)
         {
-            const int UPDATE_INTERVAL = 5000;
+            const int UPDATE_INTERVAL = 1000;
             while (true)
             {
-                Task.Delay(UPDATE_INTERVAL).Wait();
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
                 SelectLowestScoreServer(ChongqingServerList);
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
                 SelectLowestScoreServer(TianjinServerList);
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
                 SelectLowestScoreServer(GuangzhouServerList);
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
                 SelectLowestScoreServer(NanjingServerList);
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                Task.Delay(UPDATE_INTERVAL).Wait();
             }
         }
 

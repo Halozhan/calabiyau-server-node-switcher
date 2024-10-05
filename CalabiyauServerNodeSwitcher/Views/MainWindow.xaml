@@ -1,4 +1,4 @@
-<Window x:Class="CalabiyauServerNodeSwitcher.Views.MainWindow"
+﻿<Window x:Class="CalabiyauServerNodeSwitcher.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -76,127 +76,175 @@
         </DataTemplate>
     </Window.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+            <ToggleButton Content="Auto-Find Best Server" IsChecked="{Binding IsAutoFindEnabled}" Command="{Binding ToggleAutoFindCommand}" Margin="5"/>
+            <Button Content="Refresh Ping" Command="{Binding RefreshCommand}" Margin="5"/>
+            <Button Content="Reset Configurations" Command="{Binding ResetCommand}" Margin="5"/>
+        </StackPanel>
 
-        <!-- Server Information Lists -->
-        <!--chongqing-->
-        <StackPanel Grid.Row="0" Grid.Column="0" Margin="5">
-            <TextBox Text="Domain: ds-cq-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
-            <ListView Name="chongqing_servers" ItemsSource="{Binding ChongqingServerList}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
-                        <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
-                        <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
-                        <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
-                        <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
-                        <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
-                        <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
-                        <GridViewColumn Header="Selection" Width="60">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <RadioButton
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Server Information Lists -->
+            <!--chongqing-->
+            <StackPanel Grid.Row="0" Grid.Column="0" Margin="5">
+                <TextBox Text="Domain: ds-cq-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
+                <ListView Name="chongqing_servers" ItemsSource="{Binding ChongqingServerList}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                            <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
+                            <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                            <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
+                            <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
+                            <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                            <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
+                            <GridViewColumn Header="Selection" Width="60">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <RadioButton
                                         GroupName="chongqing_group"
                                         IsChecked="{Binding IsSelected}"
-                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </StackPanel>
+                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}">
+                                            <RadioButton.Style>
+                                                <Style TargetType="RadioButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding DataContext.IsAutoFindEnabled, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </RadioButton.Style>
+                                        </RadioButton>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
 
-        <!--tianjin-->
-        <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
-            <TextBox Text="Domain: ds-tj-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
-            <ListView Name="tianjin_servers" ItemsSource="{Binding TianjinServerList}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
-                        <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
-                        <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
-                        <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
-                        <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
-                        <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
-                        <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
-                        <GridViewColumn Header="Selection" Width="60">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <RadioButton
+            <!--tianjin-->
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
+                <TextBox Text="Domain: ds-tj-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
+                <ListView Name="tianjin_servers" ItemsSource="{Binding TianjinServerList}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                            <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
+                            <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                            <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
+                            <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
+                            <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                            <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
+                            <GridViewColumn Header="Selection" Width="60">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <RadioButton
                                         GroupName="tianjin_group"
                                         IsChecked="{Binding IsSelected}"
-                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </StackPanel>
+                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}">
+                                            <RadioButton.Style>
+                                                <Style TargetType="RadioButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding DataContext.IsAutoFindEnabled, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </RadioButton.Style>
+                                        </RadioButton>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
 
-        <!--guangzhou-->
-        <StackPanel Grid.Row="1" Grid.Column="0" Margin="5">
-            <TextBox Text="Domain: ds-gz-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
-            <ListView Name="guangzhou_servers" ItemsSource="{Binding GuangzhouServerList}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
-                        <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
-                        <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
-                        <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
-                        <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
-                        <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
-                        <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
-                        <GridViewColumn Header="Selection" Width="60">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <RadioButton
+            <!--guangzhou-->
+            <StackPanel Grid.Row="1" Grid.Column="0" Margin="5">
+                <TextBox Text="Domain: ds-gz-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
+                <ListView Name="guangzhou_servers" ItemsSource="{Binding GuangzhouServerList}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                            <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
+                            <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                            <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
+                            <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
+                            <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                            <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
+                            <GridViewColumn Header="Selection" Width="60">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <RadioButton
                                         GroupName="guangzhou_group"
                                         IsChecked="{Binding IsSelected}"
-                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </StackPanel>
+                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}">
+                                            <RadioButton.Style>
+                                                <Style TargetType="RadioButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding DataContext.IsAutoFindEnabled, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </RadioButton.Style>
+                                        </RadioButton>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
 
-        <!--nanjing-->
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
-            <TextBox Text="Domain: ds-nj-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
-            <ListView Name="nanjing_servers" ItemsSource="{Binding NanjingServerList}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
-                        <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
-                        <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
-                        <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
-                        <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
-                        <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
-                        <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
-                        <GridViewColumn Header="Selection" Width="60">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <RadioButton
+            <!--nanjing-->
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
+                <TextBox Text="Domain: ds-nj-1.klbq.qq.com" Margin="5" IsReadOnly="True"/>
+                <ListView Name="nanjing_servers" ItemsSource="{Binding NanjingServerList}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="IP Address" Width="100" CellTemplate="{StaticResource IPAddressTemplate}"/>
+                            <GridViewColumn Header="Score" Width="60" CellTemplate="{StaticResource ScoreTemplate}"/>
+                            <GridViewColumn Header="Ping" Width="60" CellTemplate="{StaticResource PingTemplate}"/>
+                            <GridViewColumn Header="Lowest" Width="60" CellTemplate="{StaticResource LowestPingTemplate}"/>
+                            <GridViewColumn Header="Highest" Width="60" CellTemplate="{StaticResource HighestPingTemplate}"/>
+                            <GridViewColumn Header="Stdev" Width="40" CellTemplate="{StaticResource PingStdDeviationTemplate}"/>
+                            <GridViewColumn Header="LossRate" Width="60" DisplayMemberBinding="{Binding Ping.RecentLossRate, StringFormat={}{0:F2}}"/>
+                            <GridViewColumn Header="Selection" Width="60">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <RadioButton
                                         GroupName="nanjing_group"
                                         IsChecked="{Binding IsSelected}"
-                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </StackPanel>
-    </Grid>
+                                        Command="{Binding DataContext.GroupButtonCommand, RelativeSource={RelativeSource AncestorType=ListView}}">
+                                            <RadioButton.Style>
+                                                <Style TargetType="RadioButton">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding DataContext.IsAutoFindEnabled, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </RadioButton.Style>
+                                        </RadioButton>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
 </Window>
