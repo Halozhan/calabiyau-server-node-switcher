@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CalabiyauServerNodeSwitcher.Models
 {
@@ -44,6 +44,23 @@ namespace CalabiyauServerNodeSwitcher.Models
             }
         }
 
+        public void ClearPing()
+        {
+            lock (lockObject)
+            {
+                pingList.Clear();
+                CalculateLastPing();
+                CalculateAveragePing();
+                CalculateRecentAveragePing();
+                CalculateLossRate();
+                CalculateRecentLossRate();
+                CalculateLowestPing();
+                CalculateHighestPing();
+                CalculateStdDeviation();
+                CalculateScore();
+            }
+        }
+
         // Last Ping
         private double lastPing;
         public double LastPing
@@ -53,7 +70,14 @@ namespace CalabiyauServerNodeSwitcher.Models
         }
         private void CalculateLastPing()
         {
-            LastPing = pingList.Last();
+            if (pingList.Count > 0)
+            {
+                LastPing = pingList.Last();
+            }
+            else
+            {
+                LastPing = 0;
+            }
         }
 
         // 평균 Ping
