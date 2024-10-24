@@ -2,30 +2,34 @@
 This is a simple server node switcher for Calabiyau(卡拉彼丘) game. It can help you change hosts file to switch server node easily.
 
 ## How to use
-1. Download the latest release from [release page](https://github.com/Halozhan/calabiyau_dns_fixer/releases).
-2. Run the executable file.
-3. There are four regions and you have to choose the best server for each.
+1. Download the latest ```net8.0-windows.zip``` release from [release page](https://github.com/Halozhan/calabiyau-server-node-switcher/releases/latest).
+2. ```Extract``` the zip file.
+3. Run the ```exe```cutable file.
+4. There are four regions and you have to choose the lowest score servers.
+5. You can simple click by ```Auto-Find Best Server``` and it will find the best server for you.
+6. Done! You can now play the game with the selected server.
+
+![image](todo)
 ![image](https://github.com/user-attachments/assets/fedbc086-0630-4d9c-a3c3-f2da3c913f6d)
 
 
-## What is the best server?
-The best server is the server that has the lowest and most stable ping.
-In my case, I live in Korea. So, the best server might be different from your country.
+## How to change server node manually
+1. ```Open``` the ```hosts``` file with administrator in the ```C:\Windows\System32\drivers\etc``` directory.
+2. ```Add``` each game server ip and domains to the hosts file.
+3. example like this
 ```
-Tianjin(天津) is 116.130.xxx.xxx or 123.151.54.47 is recommended.
-Nanjing(南京) is 182.50.15.118 or 121.229.92.16, 180.110.193.185 is recommended.
-Guangzhou(广州) is 43.159.233.178 or 183.47.107.193 is recommended.
-Chongqing(重庆) is 113.250.9.xxx or 58.144.164.xxx is recommended.
+157.148.58.53 ds-gz-1.klbq.qq.com
+175.27.48.249 ds-cq-1.klbq.qq.com
+182.50.15.118 ds-nj-1.klbq.qq.com
+109.244.173.251 ds-tj-1.klbq.qq.com
+```
 
-Avoid 43.159.233.xxx if possible, except for Guangzhou(广州). Those servers are Hong Kong relay servers and can have high latency.
-```
 
 ## How to restore hosts file
-There are 4 buttons each. "set to default" button can restore hosts file to default.
+```Reset Configurations``` button can restore hosts file to default.
+
+or you can manually delete the added lines in the hosts file.
 
 
 ## Contribution
-```sh
-pip install -e .
-pyinstaller calabiyau_server_node_switcher.spec
-```
+Feel free to open an issue or pull request.
