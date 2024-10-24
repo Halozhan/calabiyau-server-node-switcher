@@ -9,8 +9,9 @@ This is a simple server node switcher for Calabiyau(卡拉彼丘) game. It can h
 5. You can simple click by ```Auto-Find Best Server``` and it will find the best server for you.
 6. Done! You can now play the game with the selected server.
 
-![image](todo)
-![image](https://github.com/user-attachments/assets/fedbc086-0630-4d9c-a3c3-f2da3c913f6d)
+![image](https://github.com/user-attachments/assets/462cb765-34a7-4189-83fe-4b4f376466f8)
+![image](https://github.com/user-attachments/assets/539a7fb5-a174-419f-93c8-3152faafede4)
+
 
 
 ## How to change server node manually
