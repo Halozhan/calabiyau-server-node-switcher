@@ -33,10 +33,10 @@
                     <ToolTip>
                         <StackPanel>
                             <TextBlock Text="{Binding Ping.Score, StringFormat='Score: {0:F2} (Lower is better)'}" FontWeight="Bold"/>
-                            <TextBlock Text="Score = (AveragePing + StdDeviation) * (1 + LossRate / 4)"/>
+                            <TextBlock Text="Score = (AveragePing + StdDeviation) * (50 ^ 0.01 * LossRate)"/>
                             <TextBlock>
                                 <TextBlock.Text>
-                                    <MultiBinding StringFormat="Score = ({0:F2} + {1:F2}) * (1 + {2:F2} / 4)">
+                                    <MultiBinding StringFormat="Score = ({0:F2} + {1:F2}) * (50 ^ 0.01 * {2:F2})">
                                         <Binding Path="Ping.AveragePing"/>
                                         <Binding Path="Ping.StdDeviation"/>
                                         <Binding Path="Ping.LossRate"/>

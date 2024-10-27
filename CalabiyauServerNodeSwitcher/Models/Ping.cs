@@ -270,7 +270,7 @@ namespace CalabiyauServerNodeSwitcher.Models
         }
         private void CalculateScore()
         {
-            Score = (AveragePing + StdDeviation) * (1 + LossRate / 4);
+            Score = (AveragePing + StdDeviation) * Math.Pow(50, 0.01 * LossRate);
         }
     }
 }
