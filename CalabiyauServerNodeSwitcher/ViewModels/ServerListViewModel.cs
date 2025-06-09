@@ -54,15 +54,20 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
             // chongqing
             ChongqingServerList = new List<ServerInfo>
             {
-                new ServerInfo { IPAddress = "111.10.11.250", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "111.10.11.73", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "113.250.9.54", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "113.250.9.56", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "175.27.48.249", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "175.27.49.194", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "43.159.233.98", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "58.144.164.43", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "58.144.164.50", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" }
+                //new ServerInfo { IPAddress = "111.10.11.250", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "111.10.11.73", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "113.250.9.54", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "113.250.9.56", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "175.27.48.249", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "175.27.49.194", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "43.159.233.98", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "58.144.164.43", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "58.144.164.50", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "119.45.28.76", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "43.134.150.4", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "43.175.253.232", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "43.175.252.232", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "129.226.82.90", Ping = new Ping(), IsSelected = false, Domain = "ds-cq-1.klbq.qq.com" },
             };
 
             string chongqingIP = HostsManager.Instance.GetIPAddress("ds-cq-1.klbq.qq.com");
@@ -78,15 +83,18 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
             // tianjin
             TianjinServerList = new List<ServerInfo>
             {
-                new ServerInfo { IPAddress = "109.244.173.239", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "109.244.173.251", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "111.30.170.175", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "111.33.110.226", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "116.130.228.105", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "116.130.229.177", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "123.151.54.47", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "42.81.194.60", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "43.159.233.14", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" }
+                //new ServerInfo { IPAddress = "109.244.173.239", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "109.244.173.251", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "111.30.170.175", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "111.33.110.226", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "116.130.228.105", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "116.130.229.177", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "123.151.54.47", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "42.81.194.60", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "43.159.233.14", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" }
+                new ServerInfo { IPAddress = "43.132.138.189", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "43.175.252.41", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "43.175.253.41", Ping = new Ping(), IsSelected = false, Domain = "ds-tj-1.klbq.qq.com" },
             };
 
             string tianjinIP = HostsManager.Instance.GetIPAddress("ds-tj-1.klbq.qq.com");
@@ -102,15 +110,16 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
             // guangzhou
             GuangzhouServerList = new List<ServerInfo>
             {
-                new ServerInfo { IPAddress = "120.232.24.96", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "120.233.18.175", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "14.29.103.46", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "157.148.58.53", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "157.255.4.48", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "183.47.107.193", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "43.139.252.183", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "43.141.58.200", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "43.159.233.178", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" }
+                //new ServerInfo { IPAddress = "120.232.24.96", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "120.233.18.175", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "14.29.103.46", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "157.148.58.53", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "157.255.4.48", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "183.47.107.193", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "43.139.252.183", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "43.141.58.200", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "43.159.233.178", Ping = new Ping(), IsSelected = false, Domain = "ds-gz-1.klbq.qq.com" }
+                new ServerInfo { IPAddress = "43.175.253.233", Domain = "ds-gz-1.klbq.qq.com", Ping = new Ping(), IsSelected = false },
             };
 
             string guangzhouIP = HostsManager.Instance.GetIPAddress("ds-gz-1.klbq.qq.com");
@@ -126,15 +135,18 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
             // nanjing
             NanjingServerList = new List<ServerInfo>
             {
-                new ServerInfo { IPAddress = "112.80.183.27", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "121.229.92.16", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "180.110.193.185", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "182.50.15.118", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "36.155.164.82", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "36.155.183.208", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "43.141.129.109", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "43.141.129.21", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
-                new ServerInfo { IPAddress = "43.159.233.198", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" }
+                //new ServerInfo { IPAddress = "112.80.183.27", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "121.229.92.16", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "180.110.193.185", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "182.50.15.118", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "36.155.164.82", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "36.155.183.208", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "43.141.129.109", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "43.141.129.21", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                //new ServerInfo { IPAddress = "43.159.233.198", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "43.163.252.167", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "43.175.227.191", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
+                new ServerInfo { IPAddress = "43.175.226.191", Ping = new Ping(), IsSelected = false, Domain = "ds-nj-1.klbq.qq.com" },
             };
             string nanjingIP = HostsManager.Instance.GetIPAddress("ds-nj-1.klbq.qq.com");
 
@@ -223,7 +235,7 @@ namespace CalabiyauServerNodeSwitcher.ViewModels
             const ushort PING_INTERVAL = SECOND / PACKET_PER_SECOND;
             const uint REFRESH_CONNECTION_SECOND = 5;
             const uint REFRESH_INTERVAL = PACKET_PER_SECOND * REFRESH_CONNECTION_SECOND;
-            const ushort PORT = 6001;
+            const ushort PORT = 20000;
             var udpClient = new GetUDPPingTime(serverInfo.IPAddress, PORT);
 
             while (true)
