@@ -3,6 +3,15 @@ revision = 1
 requires-python = ">=3.13"
 
 [[package]]
+name = "aioudp"
+version = "2.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ec/4f/0e9b87b80d801d06d3c4ad8fbd3cf46bb79162d7e842986ee4fc1f206d63/aioudp-2.0.0.tar.gz", hash = "sha256:b38ddb1fac433ec8fa209e1aa2c83907c9d805af08d8a1b5a8e7983df94137c8", size = 20152 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/27/19/e256c486757b66af54fb2c600bfab2679d14768061bb34bfdea60719dc6a/aioudp-2.0.0-py3-none-any.whl", hash = "sha256:78c4f8ca0d9617f2138514d4cc316caad3d19f2799bf6e3a60acce848d07c5b4", size = 20181 },
+]
+
+[[package]]
 name = "annotated-types"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -47,6 +56,7 @@ name = "calabiyau-server-node-switcher"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "aioudp" },
     { name = "dnspython" },
     { name = "fastapi" },
     { name = "uvicorn" },
@@ -59,6 +69,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "aioudp", specifier = ">=2.0.0" },
     { name = "dnspython", extras = ["async"], specifier = ">=2.7.0" },
     { name = "fastapi", specifier = ">=0.115.14" },
     { name = "uvicorn", specifier = ">=0.34.3" },
