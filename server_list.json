@@ -1,0 +1,22 @@
+{
+    "广州": {
+        "region_name": "Guangzhou",
+        "domain": "klbqcp-prod-ds-gz{iterable}-server.gxpan.cn",
+        "port": 20000
+    },
+    "北京": {
+        "region_name": "Beijing",
+        "domain": "klbqcp-prod-ds-bj{iterable}-server.gxpan.cn",
+        "port": 20000
+    },
+    "南京": {
+        "region_name": "Nanjing",
+        "domain": "klbqcp-prod-ds-nj{iterable}-server.gxpan.cn",
+        "port": 20000
+    },
+    "成都": {
+        "region_name": "Chengdu",
+        "domain": "klbqcp-prod-ds-cd{iterable}-server.gxpan.cn",
+        "port": 20000
+    }
+}
