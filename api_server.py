@@ -1,5 +1,6 @@
 import asyncio
 from contextlib import asynccontextmanager
+import time
 from fastapi import FastAPI, Query
 from latency_crawler.query_ping import query_ping
 from timeseries_db import get_latency_stats
@@ -10,8 +11,34 @@ from dns_query.query_servers import query_server
 import json
 
 
+async def init_db():
+    """
+    데이터베이스 초기화 함수
+    """
+    conn = sqlite3.connect("latency.db")
+    c = conn.cursor()
+    c.execute(
+        """
+        CREATE TABLE IF NOT EXISTS latency (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp INTEGER,
+            region TEXT,
+            domain TEXT,
+            server_addr TEXT,
+            port INTEGER,
+            latency REAL
+        )
+        """
+    )
+    conn.commit()
+    conn.close()
+
+
 @asynccontextmanager
 async def crawling_task(app: FastAPI):
+    # DB 초기화
+    await init_db()
+
     # region 정보 로드
     server_list = json.load(open("server_list.json", "r", encoding="utf-8"))
 
@@ -36,6 +63,28 @@ async def crawling_task(app: FastAPI):
     print("모든 서버 쿼리 완료")
     print(server_list)
 
+    # ping worker
+    async def ping_worker(region: str, domain: str, ip: str, port: int):
+        result = await query_ping(ip, port=port)
+        # 결과를 DB에 저장
+
+        conn = sqlite3.connect("latency.db")
+        c = conn.cursor()
+        if "latency" in result:
+            # 성공
+            # print(f"{domain} - {ip}:{port}: {result['latency']:.2f} ms (성공)")
+            c.execute(
+                "INSERT INTO latency (region, domain, server_addr, port, latency, timestamp) VALUES (?, ?, ?, ?, ?, ?)",
+                (region, domain, ip, port, result["latency"], int(time.time())),
+            )
+        else:
+            print(f"{domain} - {ip}:{port}: 실패: {result}")
+            c.execute(
+                "INSERT INTO latency (region, domain, server_addr, port, latency, timestamp) VALUES (?, ?, ?, ?, ?, ?)",
+                (region, domain, ip, port, -1.0, int(time.time())),
+            )
+        conn.commit()
+
     # 백그라운드 태스크 정의
     async def background_crawl():
         try:
@@ -47,11 +96,17 @@ async def crawling_task(app: FastAPI):
                         for domain, ips in node.items():
                             for ip in ips:
                                 # IP와 포트(20000)로 핑 작업을 수행하는 태스크 생성
-                                tasks.append(asyncio.create_task(query_ping(ip)))
+                                tasks.append(
+                                    asyncio.create_task(
+                                        ping_worker(
+                                            region, domain, ip, info.get("port", 20000)
+                                        )
+                                    )
+                                )
 
                 # 모든 핑 작업이 완료될 때까지 대기
-                result = await asyncio.gather(*tasks, return_exceptions=False)
-                print(result)
+                # result = await asyncio.gather(*tasks, return_exceptions=False)
+                # print(result)
                 await asyncio.sleep(config["interval_ms"] / 1000)
                 print("크롤링 작업 수행 중...")
                 # 크롤링 작업 수행

@@ -3,23 +3,23 @@ import time
 from typing import Optional
 
 
-def init_db(db_path: str = "latency.db"):
-    conn = sqlite3.connect(db_path)
-    c = conn.cursor()
-    c.execute(
-        """
-        CREATE TABLE IF NOT EXISTS latency (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            region TEXT,
-            server_addr TEXT,
-            latency REAL,
-            success INTEGER,
-            timestamp INTEGER
-        )
-    """
-    )
-    conn.commit()
-    conn.close()
+# def init_db(db_path: str = "latency.db"):
+#     conn = sqlite3.connect(db_path)
+#     c = conn.cursor()
+#     c.execute(
+#         """
+#         CREATE TABLE IF NOT EXISTS latency (
+#             id INTEGER PRIMARY KEY AUTOINCREMENT,
+#             region TEXT,
+#             server_addr TEXT,
+#             latency REAL,
+#             success INTEGER,
+#             timestamp INTEGER
+#         )
+#     """
+#     )
+#     conn.commit()
+#     conn.close()
 
 
 def insert_latency(
