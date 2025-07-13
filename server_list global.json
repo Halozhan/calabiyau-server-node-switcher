@@ -1,0 +1,12 @@
+{
+    "South Korea": {
+        "region_name": "Seoul",
+        "domain": "klbq-prod-ds-kr{iterable}-server.strinova.com",
+        "port": 20000
+    },
+    "Japan": {
+        "region_name": "Tokyo",
+        "domain": "klbq-prod-ds-jp{iterable}-server.strinova.com",
+        "port": 20000
+    }
+}
