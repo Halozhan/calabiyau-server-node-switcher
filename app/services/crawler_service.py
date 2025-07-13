@@ -4,7 +4,7 @@ Crawler service for DNS queries and server discovery
 
 import json
 from typing import Dict
-from dns_query.query_servers import query_server
+from app.network.dns_resolver import query_server
 from app.config import settings
 from app.logging_config import get_logger
 

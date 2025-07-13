@@ -4,7 +4,7 @@ Ping service for latency testing
 
 import asyncio
 from typing import Optional
-from latency_crawler.query_ping import query_ping
+from app.network.latency_measurement import measure_latency
 from app.database.models import insert_latency_record
 from app.logging_config import get_logger
 
@@ -21,11 +21,11 @@ async def ping_worker(region: str, domain: str, ip: str, port: int) -> None:
         ip: Server IP address
         port: Server port
     """
-    result = await query_ping(ip, port=port)
+    result = await measure_latency(ip, port=port)
 
     if "latency" in result:
         # 성공
-        latency = result["latency"]
+        latency = float(result["latency"])
         print(f"{domain} - {ip}:{port}: {latency:.2f} ms (성공)")
         logger.info(f"{domain} - {ip}:{port}: {latency:.2f} ms (성공)")
     else:
